@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.960
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actiwatch", "Actiwatch\Actiwatch.csproj", "{DC1F35EE-EE77-4349-AA2B-3084F4E879EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC1F35EE-EE77-4349-AA2B-3084F4E879EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC1F35EE-EE77-4349-AA2B-3084F4E879EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC1F35EE-EE77-4349-AA2B-3084F4E879EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC1F35EE-EE77-4349-AA2B-3084F4E879EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB9F0ED6-E6DC-42A2-B1B4-84D89E3234A6}
+	EndGlobalSection
+EndGlobal
