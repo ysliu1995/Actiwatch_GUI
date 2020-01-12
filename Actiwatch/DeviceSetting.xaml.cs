@@ -2,6 +2,7 @@
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -27,13 +28,21 @@ namespace Actiwatch
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
         public Func<double, string> YFormatter { get; set; }
-
-        private List<String> comport_list;
+        
         private SerialPort port;
         private string state;
         private int total_page_number;
         private int index;
         private string[] SensorData = new string[256];
+
+        private string[] total_timestamp;
+        private ChartValues<float> total_temp = new ChartValues<float>();
+        private ChartValues<int> total_light = new ChartValues<int>();
+        private ChartValues<int> total_x = new ChartValues<int>();
+        private ChartValues<int> total_y = new ChartValues<int>();
+        private ChartValues<int> total_z = new ChartValues<int>();
+
+        int flag = 0;
 
 
 
@@ -43,47 +52,6 @@ namespace Actiwatch
             InitializeComponent();
 
             GetComport();
-
-            SeriesCollection = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Title = "Series 1",
-                    Values = new ChartValues<double> { 4, 6, 5, 2 ,4 }
-                },
-                new LineSeries
-                {
-                    Title = "Series 2",
-                    Values = new ChartValues<double> { 6, 7, 3, 4 ,6 },
-                    PointGeometry = null
-                },
-                new LineSeries
-                {
-                    Title = "Series 3",
-                    Values = new ChartValues<double> { 4,2,7,2,7 },
-                    PointGeometry = DefaultGeometries.Square,
-                    PointGeometrySize = 15
-                }
-            };
-
-            Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May" };
-            YFormatter = value => value.ToString("C");
-
-            //modifying the series collection will animate and update the chart
-            SeriesCollection.Add(new LineSeries
-            {
-                Title = "Series 4",
-                Values = new ChartValues<double> { 5, 3, 2, 4 },
-                LineSmoothness = 0, //0: straight lines, 1: really smooth lines
-                PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
-                PointGeometrySize = 50,
-                PointForeground = Brushes.Gray
-            });
-
-            //modifying any series values will also animate and update the chart
-            SeriesCollection[3].Values.Add(5d);
-
-            DataContext = this;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -162,7 +130,14 @@ namespace Actiwatch
                         case "GetTotalPageNumber":
                             PRINT("start get total page number");
                             total_page_number = GetTotalPageNumber(data);
-                            total_page_number = 1;
+                            //total_page_number = 100;
+                            total_timestamp = new string[total_page_number * 40];
+                            //total_temp = new ChartValues<float>[total_page_number * 40];
+                            //total_light = new int[total_page_number * 40];
+                            //total_x= new int[total_page_number * 40];
+                            //total_y = new int[total_page_number * 40];
+                            //total_z = new int[total_page_number * 40];
+
                             PRINT("Total page number : " + total_page_number);
                             if (total_page_number < 1)
                             {
@@ -184,88 +159,74 @@ namespace Actiwatch
                                 }
                                 else
                                 {
-                                    for (int i = 0; i < 256; i++)
-                                    {
-                                        SensorData[i] = (data[6 + 2 * i] + "") + (data[6 + 2 * i + 1] + "");
-                                        PRINT(SensorData[i]);
-                                    }
-                                    PRINT(SensorData[3] + "");
-                                    PRINT(SensorData[2] + "");
-                                    PRINT(SensorData[1] + "");
-                                    PRINT(SensorData[0] + "");
-                                    //char timestamp;
-                                    //for(int i = 3; i >= 0; i--)
-                                    //{
-                                    //    timestamp += SensorData[i];
-                                    //}
-                                    //string bin_timestamp = "";
-                                    //for(int i = 0; i < 8; i++)
-                                    //{
-                                    //    PRINT(timestamp[i])
-                                    //    //bin_timestamp += Convert.ToString(Convert.ToInt32(timestamp[i], 16), 2);
-                                    //}
-                                    //string timestamp = Convert.ToString(Convert.ToInt32(SensorData[3], 16), 2)
-                                    //    + Convert.ToString(Convert.ToInt32(SensorData[2], 16), 2)
-                                    //    + Convert.ToString(Convert.ToInt32(SensorData[1], 16), 2)
-                                    //    + Convert.ToString(Convert.ToInt32(SensorData[0], 16), 2);
-                                    //timestamp = timestamp.PadLeft(32, '0');
-                                    ////PRINT(Convert.ToInt32(SensorData[1], 16));
-                                    //string tmp = "";
-                                    //for(int i = 2; i < 6; i++)
-                                    //{
-                                    //    tmp += timestamp[i];
-                                    //}
-                                    //PRINT(tmp);
-                                    //int year = Convert.ToInt32(tmp, 16) + 2019;
-                                    //tmp = "";
-                                    //for (int i = 6; i < 10; i++)
-                                    //{
-                                    //    tmp += timestamp[i];
-                                    //}
-                                    //PRINT(tmp);
-                                    //int month = Convert.ToInt32(tmp, 16);
-                                    //tmp = "";
-                                    //for (int i = 10; i < 15; i++)
-                                    //{
-                                    //    tmp += timestamp[i];
-                                    //}
-                                    //PRINT(tmp);
-                                    //int day = Convert.ToInt32(tmp, 16);
-                                    //tmp = "";
-                                    //for (int i = 15; i < 20; i++)
-                                    //{
-                                    //    tmp += timestamp[i];
-                                    //}
-                                    //PRINT(tmp);
-                                    //int hour = Convert.ToInt32(tmp, 16);
-                                    //tmp = "";
-                                    //for (int i = 20; i < 26; i++)
-                                    //{
-                                    //    tmp += timestamp[i];
-                                    //}
-                                    //PRINT(tmp);
-                                    //int minute = Convert.ToInt32(tmp, 16);
-                                    //tmp = "";
-                                    //for (int i = 26; i < 32; i++)
-                                    //{
-                                    //    tmp += timestamp[i];
-                                    //}
-                                    //PRINT(tmp);
-                                    //int second = Convert.ToInt32(tmp, 16);
-                                    //PRINT(year + " year");
-                                    //PRINT(month + " month");
-                                    //PRINT(day + " day");
-                                    //PRINT(hour + " hour");
-                                    //PRINT(minute + " minute");
-                                    //PRINT(second + " second");
-                                    //PRINT(timestamp); 
+                                    GetSensorData(data);
                                     GetPageData(++index);
                                 }
                             }
                             else
                             {
+                                state = "Stop";
                                 //PRINT("Get data finish");
                             }
+                            break;
+                        case "Stop":
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                // UI modify
+                                //SeriesCollection = new SeriesCollection();
+                                //SeriesCollection.Add(new LineSeries
+                                //{
+                                //    Title = "X axis",
+                                //    Values = total_x,
+                                //    LineSmoothness = 0, //0: straight lines, 1: really smooth lines
+                                //    PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
+                                //    PointGeometrySize = 50,
+                                //    PointForeground = Brushes.Gray
+                                //});
+                                //SeriesCollection.Add(new LineSeries
+                                //{
+                                //    Title = "Y axis",
+                                //    Values = total_y,
+                                //    LineSmoothness = 0, //0: straight lines, 1: really smooth lines
+                                //    PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
+                                //    PointGeometrySize = 50,
+                                //    PointForeground = Brushes.Gray
+                                //});
+                                //SeriesCollection.Add(new LineSeries
+                                //{
+                                //    Title = "Z axis",
+                                //    Values = total_z,
+                                //    LineSmoothness = 0, //0: straight lines, 1: really smooth lines
+                                //    PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
+                                //    PointGeometrySize = 50,
+                                //    PointForeground = Brushes.Gray
+                                //});
+                                //DataContext = this;
+                                SeriesCollection = new SeriesCollection
+                                {
+                                    new LineSeries
+                                    {
+                                        Title = "X axis",
+                                        Values = total_x,
+                                        PointGeometry = null,
+                                    },
+                                    new LineSeries
+                                    {
+                                        Title = "Y axis",
+                                        Values = total_y,
+                                        PointGeometry = null,
+                                    },
+                                    new LineSeries
+                                    {
+                                        Title = "Z axis",
+                                        Values = total_z,
+                                        PointGeometry = null,
+                                    }
+                                };
+
+                                DataContext = this;
+                            });
+
                             break;
                         case "Recording":
                             break;
@@ -279,6 +240,110 @@ namespace Actiwatch
                 {
                     MessageBox.Show(String.Format("出問題啦:{0}", error.ToString()));
                 }
+            }
+        }
+
+        private void GetSensorData(string data)
+        {
+            for (int i = 0; i < 256; i++)
+            {
+                SensorData[i] = (data[6 + 2 * i] + "") + (data[6 + 2 * i + 1] + "");
+            }
+            string timestamp = Convert.ToString(Convert.ToInt32(SensorData[3], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[2], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[1], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[0], 16), 2).PadLeft(8, '0');
+            string tmp = "";
+            for (int i = 2; i < 6; i++)
+            {
+                tmp += timestamp[i];
+            }
+            int year = Convert.ToInt32(tmp, 2) + 2019;
+            tmp = "";
+            for (int i = 6; i < 10; i++)
+            {
+                tmp += timestamp[i];
+            }
+            int month = Convert.ToInt32(tmp, 2);
+            tmp = "";
+            for (int i = 10; i < 15; i++)
+            {
+                tmp += timestamp[i];
+            }
+            int day = Convert.ToInt32(tmp, 2);
+            tmp = "";
+            for (int i = 15; i < 20; i++)
+            {
+                tmp += timestamp[i];
+            }
+            int hour = Convert.ToInt32(tmp, 2);
+            tmp = "";
+            for (int i = 20; i < 26; i++)
+            {
+                tmp += timestamp[i];
+            }
+            int minute = Convert.ToInt32(tmp, 2);
+            tmp = "";
+            for (int i = 26; i < 32; i++)
+            {
+                tmp += timestamp[i];
+            }
+            int second = Convert.ToInt32(tmp, 2);
+            timestamp = year + "/" + (month + "").PadLeft(2, '0') + "/" + (day + "").PadLeft(2, '0') + " " +
+                (hour + "").PadLeft(2, '0') + ":" +
+                (minute + "").PadLeft(2, '0') + ":" +
+                (second + "").PadLeft(2, '0');
+            //PRINT(timestamp);
+            DateTime taskDate = DateTime.ParseExact(timestamp, "yyyy/MM/dd hh:mm:ss", CultureInfo.InvariantCulture);
+            long unixTime = ((DateTimeOffset)taskDate).ToUnixTimeSeconds();
+
+            float temp = Convert.ToInt32(SensorData[5] + SensorData[4], 16) / 10;
+            int light = Convert.ToInt32(SensorData[7] + SensorData[6], 16);
+            //PRINT(temp+"");
+            //PRINT(light+"");
+
+
+            for (int j = 0; j < 40; j++)
+            {
+                string OneSecondData = Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 3)], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 2)], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 1)], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 0)], 16), 2).PadLeft(8, '0');
+                tmp = "";
+                for (int i = 2; i < 12; i++)
+                {
+                    tmp += OneSecondData[i];
+                }
+                int x = Convert.ToInt32(tmp, 2) * 4;
+                tmp = "";
+                for (int i = 12; i < 22; i++)
+                {
+                    tmp += OneSecondData[i];
+                }
+                int y = Convert.ToInt32(tmp, 2) * 4;
+                tmp = "";
+                for (int i = 22; i < 32; i++)
+                {
+                    tmp += OneSecondData[i];
+                }
+                int z = Convert.ToInt32(tmp, 2) * 4;
+
+                DateTime dt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(unixTime);
+                string datetime = dt.ToString("yyyy/MM/dd hh:mm:ss");
+
+                PRINT(String.Format("{0}, {1}, {2}, {3}, {4}, {5}", datetime, temp, light, x, y, z));
+                //total_timestamp[flag] = datetime;
+                //total_temp[flag] = temp;
+                //total_light[flag] = light;
+                //total_x[flag] = x;
+                //total_y[flag] = y;
+                //total_z[flag] = z;
+                total_temp.Add(temp);
+                total_light.Add(light);
+                total_x.Add(x);
+                total_y.Add(y);
+                total_z.Add(z);
+                unixTime += 1;
             }
         }
 
