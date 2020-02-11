@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:local="clr-namespace:Actiwatch"
              mc:Ignorable="d" 
              d:DesignHeight="756" d:DesignWidth="1113">
@@ -10,8 +12,39 @@
         <Button
             Style="{StaticResource MaterialDesignRaisedDarkButton}"
             Width="100"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton">
+            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Click="Button_Click" Margin="10,24,1003,714" Height="Auto">
                     3
         </Button>
+        <Grid>
+            <oxy:Plot x:Name="Day1" Title="{Binding Day1title}" Margin="10,52,10,611">
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day1Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="lin2axes" Position="Bottom"
+                                Minimum="0" Maximum="24" IntervalLength="25" />
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+            <Grid/>
+            <oxy:Plot x:Name="Day2" Title="{Binding Day2title}" Margin="10,150,10,513">
+                <oxy:LineSeries ItemsSource="{Binding Day2Points}"/>
+            </oxy:Plot>
+            <oxy:Plot x:Name="Day3" Title="{Binding Day3title}" Margin="10,248,10,415">
+                <oxy:LineSeries ItemsSource="{Binding Day3Points}"/>
+            </oxy:Plot>
+            <oxy:Plot x:Name="Day4" Title="{Binding Day4title}" Margin="10,346,10,317">
+                <oxy:LineSeries ItemsSource="{Binding Day4Points}"/>
+            </oxy:Plot>
+            <oxy:Plot x:Name="Day5" Title="{Binding Day5title}" Margin="10,444,10,219">
+                <oxy:LineSeries ItemsSource="{Binding Day5Points}"/>
+            </oxy:Plot>
+            <oxy:Plot x:Name="Day6" Title="{Binding Day6title}" Margin="10,542,10,121">
+                <oxy:LineSeries ItemsSource="{Binding Day6Points}"/>
+            </oxy:Plot>
+            <oxy:Plot x:Name="Day7" Title="{Binding Day7title}" Margin="10,640,10,23">
+                <oxy:LineSeries ItemsSource="{Binding Day7Points}"/>
+            </oxy:Plot>
+        </Grid>
     </Grid>
+    
 </UserControl>

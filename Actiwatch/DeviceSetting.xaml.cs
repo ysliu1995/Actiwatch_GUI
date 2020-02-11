@@ -173,35 +173,6 @@ namespace Actiwatch
                             Application.Current.Dispatcher.Invoke(() =>
                             {
                                 // UI modify
-                                //SeriesCollection = new SeriesCollection();
-                                //SeriesCollection.Add(new LineSeries
-                                //{
-                                //    Title = "X axis",
-                                //    Values = total_x,
-                                //    LineSmoothness = 0, //0: straight lines, 1: really smooth lines
-                                //    PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
-                                //    PointGeometrySize = 50,
-                                //    PointForeground = Brushes.Gray
-                                //});
-                                //SeriesCollection.Add(new LineSeries
-                                //{
-                                //    Title = "Y axis",
-                                //    Values = total_y,
-                                //    LineSmoothness = 0, //0: straight lines, 1: really smooth lines
-                                //    PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
-                                //    PointGeometrySize = 50,
-                                //    PointForeground = Brushes.Gray
-                                //});
-                                //SeriesCollection.Add(new LineSeries
-                                //{
-                                //    Title = "Z axis",
-                                //    Values = total_z,
-                                //    LineSmoothness = 0, //0: straight lines, 1: really smooth lines
-                                //    PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
-                                //    PointGeometrySize = 50,
-                                //    PointForeground = Brushes.Gray
-                                //});
-                                //DataContext = this;
                                 SeriesCollection = new SeriesCollection
                                 {
                                     new LineSeries
@@ -368,11 +339,7 @@ namespace Actiwatch
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            state = "GetTotalPageNumber";
-
-            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xAA };
-            port.Write(bytestosend, 0, 4);
-            Console.WriteLine("Comport Write");
+            
         }
 
         private string ByteArrayToHexString(byte[] data)
@@ -399,6 +366,15 @@ namespace Actiwatch
         private void PRINT(string text)
         {
             Console.WriteLine(text);
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            state = "GetTotalPageNumber";
+
+            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xAA };
+            port.Write(bytestosend, 0, 4);
+            Console.WriteLine("Comport Write");
         }
     }
 }

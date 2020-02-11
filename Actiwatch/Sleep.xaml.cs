@@ -20,9 +20,22 @@ namespace Actiwatch
     /// </summary>
     public partial class Sleep : UserControl
     {
+        private Day1Model oxyPlotModel;
         public Sleep()
         {
             InitializeComponent();
+            Day1.DataContext = new Day1Model(Global.Dialy_List[0].GetVM());
+            Day1.TitleFontSize = 10;
+            lin2axes.FontSize = 8;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            PRINT(Global.Dialy_List[0].GetDatetime());
+        }
+        private void PRINT(string text)
+        {
+            Console.WriteLine(text);
         }
     }
 }

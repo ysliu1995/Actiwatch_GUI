@@ -35,7 +35,7 @@
         <Grid>
             <Button
             Style="{StaticResource MaterialDesignRaisedDarkButton}"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="42,90,925,634">
+            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="42,90,925,634" Click="Button_Click_4">
                 Download
             </Button>
         </Grid>
