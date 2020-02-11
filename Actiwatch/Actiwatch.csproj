@@ -81,6 +81,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Day1Model.cs" />
+    <Compile Include="Day2Model.cs" />
+    <Compile Include="Day3Model.cs" />
+    <Compile Include="Day4Model.cs" />
+    <Compile Include="Day5Model.cs" />
+    <Compile Include="Day6Model.cs" />
+    <Compile Include="Day7Model.cs" />
     <Compile Include="LightViewModel.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Sleep.xaml.cs">

@@ -37,13 +37,13 @@
         </EventTrigger>
     </Window.Triggers>
     <Grid Background="#DDDDDD">
-        <Grid x:Name="GridMain" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="756" Width="1113"/>
         <Grid Height="60" VerticalAlignment="Top" Background="#2196f3">
             <Grid.Effect>
                 <DropShadowEffect BlurRadius="5" ShadowDepth="1" Color="#FFACACAC"/>
             </Grid.Effect>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Foreground="#FFFFFF">iSleepBetter</TextBlock>
         </Grid>
+        <Grid x:Name="GridMain" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="756" Width="1113"/>
         <Grid x:Name="GridMenu" Width="70" HorizontalAlignment="Left" Background="#FFFFFF">
             <Grid.Effect>
                 <DropShadowEffect BlurRadius="2" ShadowDepth="1" Color="#FFAEAEAE"/>
