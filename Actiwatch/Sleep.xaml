@@ -28,7 +28,58 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" FontSize="15" >  Date and time in bed</TextBlock>
+                </StackPanel>
+                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" FontSize="15" >  Date and time out of  bed</TextBlock>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                    <DatePicker
+                      x:Name="startDate"
+                      materialDesign:HintAssist.Hint="Pick Date"
+                      Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />      
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                    <DatePicker
+                      x:Name="endDate"
+                      materialDesign:HintAssist.Hint="Pick Date"
+                      Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
+                    <materialDesign:TimePicker
+                      Is24Hours="True"
+                      x:Name="startTime"
+                      Width="100" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
+                    <materialDesign:TimePicker
+                      Is24Hours="True"
+                      x:Name="endTime"
+                      Width="100" />
+                </StackPanel>
+                <StackPanel Grid.Column="3" Grid.RowSpan="2" Orientation="Horizontal">
+                    <Button
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                        Click="RefreshDateButton"
+                        FontSize="12">
+                        Store these times and refresh
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -54,6 +105,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Name="lin1axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
+                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
         <oxy:Plot Grid.Row="2" Grid.Column="0" x:Name="Day2" Title="{Binding Day2title}" >
@@ -63,6 +115,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Name="lin2axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
+                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
         <oxy:Plot Grid.Row="3" Grid.Column="0" x:Name="Day3" Title="{Binding Day3title}" >
@@ -72,6 +125,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Name="lin3axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
+                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
         <oxy:Plot Grid.Row="4" Grid.Column="0" x:Name="Day4" Title="{Binding Day4title}" >
@@ -81,6 +135,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Name="lin4axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
+                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
         <oxy:Plot Grid.Row="5" Grid.Column="0" x:Name="Day5" Title="{Binding Day5title}" >
@@ -90,6 +145,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Name="lin5axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
+                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
         <oxy:Plot Grid.Row="6" Grid.Column="0" x:Name="Day6" Title="{Binding Day6title}" >
@@ -99,6 +155,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Name="lin6axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
+                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
         <oxy:Plot Grid.Row="7" Grid.Column="0" x:Name="Day7" Title="{Binding Day7title}" >
@@ -108,6 +165,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Name="lin7axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
+                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
 

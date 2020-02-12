@@ -33,19 +33,41 @@ namespace Actiwatch
         public float[] temp = new float[86400];
         public int[] light = new int[86400];
         public double[] vm = new double[86400];
+        public double[] vmDiff = new double[86399];
         public int[] x = new int[86400];
         public int[] y = new int[86400];
         public int[] z = new int[86400];
+        public double startRange;
+        public double endRange;
 
-        public DialyData(string datetime, float[] temp, int[] light,double[] vm, int[] x, int[] y, int[] z)
+        public DialyData(string datetime, float[] temp, int[] light, double[] vm, double[] vmDiff, int[] x, int[] y, int[] z)
         {
             this.datetime = datetime;
             this.temp = (float[])temp.Clone();
             this.light = (int[])light.Clone();
             this.vm = (double[])vm.Clone();
+            this.vmDiff = (double[])vmDiff.Clone();
             this.x = (int[])x.Clone();
             this.y = (int[])y.Clone();
             this.z = (int[])z.Clone();
+            this.startRange = 0;
+            this.endRange = 0;
+        }
+        public void SetStartRange(double startRange)
+        {
+            this.startRange = startRange;
+        }
+        public void SetEndRange(double endRange)
+        {
+            this.endRange = endRange;
+        }
+        public double GetStartRange()
+        {
+            return this.startRange;
+        }
+        public double GetEndRange()
+        {
+            return this.endRange;
         }
         public string GetDatetime()
         {
@@ -62,6 +84,10 @@ namespace Actiwatch
         public double[] GetVM()
         {
             return this.vm;
+        }
+        public double[] GetVMDiff()
+        {
+            return this.vmDiff;
         }
         public int[] GetX()
         {
@@ -109,6 +135,7 @@ namespace Actiwatch
                         float[] tmp_temp = new float[86400];
                         int[] tmp_light = new int[86400];
                         double[] tmp_vm = new double[86400];
+                        double[] tmp_vm_diff = new double[86399];
                         int[] tmp_x = new int[86400];
                         int[] tmp_y = new int[86400];
                         int[] tmp_z = new int[86400];
@@ -155,7 +182,11 @@ namespace Actiwatch
                             index++;
                             if(index == 86400)
                             {
-                                DialyData tmp = new DialyData(data[0].Split(' ')[0], tmp_temp, tmp_light, tmp_vm, tmp_x, tmp_y, tmp_z);
+                                for(int i = 0; i < 86399; i++)
+                                {
+                                    tmp_vm_diff[i] = Math.Pow(tmp_vm[i + 1] - tmp_vm[i], 2);
+                                }
+                                DialyData tmp = new DialyData(data[0].Split(' ')[0], tmp_temp, tmp_light, tmp_vm, tmp_vm_diff, tmp_x, tmp_y, tmp_z);
                                 Global.Dialy_List.Add(tmp);
                                 index = 0;
                                 for(int i = 0; i < 86400; i++)
@@ -171,13 +202,7 @@ namespace Actiwatch
                         }
                         if(index < 86400)
                         {
-                            //DateTime FinalDate = DateTime.ParseExact(data[0], "yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture);
-                            //long FinalUnixTime = ((DateTimeOffset)FinalDate).ToUnixTimeSeconds();
-                            //DateTime FinalInitialDate = DateTime.ParseExact(data[0].Split(' ')[0], "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                            //long FinalInitialUnixTime = ((DateTimeOffset)FinalInitialDate).ToUnixTimeSeconds();
-                            //PRINT(InitialUnixTime + "");
-                            //PRINT(FirstUnixTime + "");
-                            //long last = 86400 - (FinalUnixTime - FinalInitialUnixTime + 1) + 1;
+                            
                             for(int i = index; i < 86400; i++)
                             {
                                 tmp_temp[i] = 0;
@@ -187,7 +212,11 @@ namespace Actiwatch
                                 tmp_y[i] = 0;
                                 tmp_z[i] = 0;
                             }
-                            DialyData tmp = new DialyData(data[0].Split(' ')[0], tmp_temp, tmp_light, tmp_vm, tmp_x, tmp_y, tmp_z);
+                            for (int i = 0; i < 86399; i++)
+                            {
+                                tmp_vm_diff[i] = Math.Pow(tmp_vm[i + 1] - tmp_vm[i], 2);
+                            }
+                            DialyData tmp = new DialyData(data[0].Split(' ')[0], tmp_temp, tmp_light, tmp_vm, tmp_vm_diff, tmp_x, tmp_y, tmp_z);
                             Global.Dialy_List.Add(tmp);
                         }
                         PRINT(Global.Dialy_List.Count + "");
@@ -203,13 +232,6 @@ namespace Actiwatch
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            // UI modify
-                            //MainPanelViewmodel vm = new MainPanelViewmodel()
-                            //{
-                            //    GsensorModel = new MainViewModel(Dialy_List[0].GetX()),
-                            //    LightModel = new LightViewModel(Dialy_List[0].GetLight())
-                            //};
-                            //DataContext = vm;
                             Gsensor.DataContext = new MainViewModel(Global.Dialy_List[0].GetVM());
                             Light.DataContext = new LightViewModel(Global.Dialy_List[0].GetLight());
                             Temp.DataContext = new TempViewModel(Global.Dialy_List[0].GetTemp());

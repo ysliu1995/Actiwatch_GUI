@@ -13,7 +13,7 @@ namespace Actiwatch
         {
             this.Day5title = "X axis";
             this.Day5Points = new List<DataPoint>();
-            for (int i = 0; i < 86400; i++)
+            for (int i = 0; i < 86399; i++)
             {
                 this.Day5Points.Add(new DataPoint((double)i / 3600, x[i]));
             }
