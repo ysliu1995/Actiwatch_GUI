@@ -28,16 +28,34 @@
             </Button>
         </Grid>
         <Grid>
-            <ProgressBar
-              Style="{StaticResource MaterialDesignCircularProgressBar}"
-              x:Name="DeterminateCircularProgress" Margin="540,50,553,686" />
-        </Grid>
-        <Grid>
-            <Button
-            Style="{StaticResource MaterialDesignRaisedDarkButton}"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="42,90,925,634" Click="Button_Click_4">
-                Download
-            </Button>
+            <materialDesign:DialogHost>
+                <Button
+                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                materialDesign:DialogHost.DialogOpenedAttached="Sample2_DialogHost_OnDialogOpening"
+                materialDesign:DialogHost.DialogClosingAttached="Sample2_DialogHost_OnDialogClosing"
+                Width="128" RenderTransformOrigin="-1,-3.766" Margin="46,92,939,632">
+                    <Button.CommandParameter>
+                        <StackPanel
+                        Margin="16">
+                            <ProgressBar
+                          Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                          HorizontalAlignment="Center"
+                          Margin="16"
+                          IsIndeterminate="True"
+                          Value="0" />
+                            <Button
+                          Style="{StaticResource MaterialDesignFlatButton}"
+                          IsCancel="True"
+                          Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                          CommandParameter="Sample2Cancel"
+                          HorizontalAlignment="Center">
+                                CANCEL
+                            </Button>
+                        </StackPanel>
+                    </Button.CommandParameter>
+                    Download
+                </Button>
+            </materialDesign:DialogHost>
         </Grid>
         <Grid>
             <Button
@@ -54,7 +72,7 @@
             </Button>
         </Grid>
         <Grid>
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Margin="42,159,47,24" >
+            <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Margin="55,181,47,24" >
                 <lvc:CartesianChart.AxisY>
                     <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
                 </lvc:CartesianChart.AxisY>

@@ -1,5 +1,6 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -170,6 +171,7 @@ namespace Actiwatch
                             }
                             break;
                         case "Stop":
+
                             Application.Current.Dispatcher.Invoke(() =>
                             {
                                 // UI modify
@@ -276,29 +278,18 @@ namespace Actiwatch
 
             for (int j = 0; j < 40; j++)
             {
-                string OneSecondData = Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 3)], 16), 2).PadLeft(8, '0')
-                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 2)], 16), 2).PadLeft(8, '0')
-                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 1)], 16), 2).PadLeft(8, '0')
-                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 4 + 0)], 16), 2).PadLeft(8, '0');
-                tmp = "";
-                for (int i = 2; i < 12; i++)
-                {
-                    tmp += OneSecondData[i];
-                }
-                int x = Convert.ToInt32(tmp, 2) * 4;
-                tmp = "";
-                for (int i = 12; i < 22; i++)
-                {
-                    tmp += OneSecondData[i];
-                }
-                int y = Convert.ToInt32(tmp, 2) * 4;
-                tmp = "";
-                for (int i = 22; i < 32; i++)
-                {
-                    tmp += OneSecondData[i];
-                }
-                int z = Convert.ToInt32(tmp, 2) * 4;
-
+                string OneSecondDataX = Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 1)], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 0)], 16), 2).PadLeft(8, '0');
+                string OneSecondDataY = Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 3)], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 2)], 16), 2).PadLeft(8, '0');
+                string OneSecondDataZ = Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 5)], 16), 2).PadLeft(8, '0')
+                + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 4)], 16), 2).PadLeft(8, '0');
+                int x = Convert.ToInt32(OneSecondDataX, 2) > 2047 ? 65536 - Convert.ToInt32(OneSecondDataX, 2) : Convert.ToInt32(OneSecondDataX, 2);
+                int y = Convert.ToInt32(OneSecondDataY, 2) > 2047 ? 65536 - Convert.ToInt32(OneSecondDataY, 2) : Convert.ToInt32(OneSecondDataY, 2);
+                int z = Convert.ToInt32(OneSecondDataZ, 2) > 2047 ? 65536 - Convert.ToInt32(OneSecondDataZ, 2) : Convert.ToInt32(OneSecondDataZ, 2);
+                x *= 4;
+                y *= 4;
+                z *= 4;
                 DateTime dt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(unixTime);
                 string datetime = dt.ToString("yyyy/MM/dd hh:mm:ss");
 
@@ -368,13 +359,26 @@ namespace Actiwatch
             Console.WriteLine(text);
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
+        private void button_click_4(object sender, RoutedEventArgs e)
+        {
+            state = "gettotalpagenumber";
+
+            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xaa };
+            port.Write(bytestosend, 0, 4);
+            Console.WriteLine("comport write");
+        }
+        private void Sample2_DialogHost_OnDialogOpening(object sender, DialogOpenedEventArgs eventArgs)
         {
             state = "GetTotalPageNumber";
 
-            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xAA };
+            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xaa };
             port.Write(bytestosend, 0, 4);
-            Console.WriteLine("Comport Write");
+            Console.WriteLine("comport write");
         }
+        private void Sample2_DialogHost_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        {
+            Console.WriteLine("End");
+        }
+        
     }
 }
