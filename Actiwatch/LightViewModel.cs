@@ -15,7 +15,7 @@ namespace Actiwatch
             this.LightPoints = new List<DataPoint>();
             for (int i = 0; i < 86400; i++)
             {
-                this.LightPoints.Add(new DataPoint(i, light[i]));
+                this.LightPoints.Add(new DataPoint((double)i / 3600, light[i]/1000));
             }
         }
         public string LightTitle { get; private set; }

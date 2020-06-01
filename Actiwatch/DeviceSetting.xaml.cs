@@ -120,7 +120,7 @@ namespace Actiwatch
             {
                 try
                 {
-                    Thread.Sleep(75);
+                    Thread.Sleep(500);
                     int bytes = port.BytesToRead;
                     byte[] buffer = new byte[bytes];
                     port.Read(buffer, 0, bytes);
@@ -160,6 +160,7 @@ namespace Actiwatch
                                 }
                                 else
                                 {
+                                    PRINT("足夠封包");
                                     GetSensorData(data);
                                     GetPageData(++index);
                                 }
@@ -171,35 +172,6 @@ namespace Actiwatch
                             }
                             break;
                         case "Stop":
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                // UI modify
-                                SeriesCollection = new SeriesCollection
-                                {
-                                    new LineSeries
-                                    {
-                                        Title = "X axis",
-                                        Values = total_x,
-                                        PointGeometry = null,
-                                    },
-                                    new LineSeries
-                                    {
-                                        Title = "Y axis",
-                                        Values = total_y,
-                                        PointGeometry = null,
-                                    },
-                                    new LineSeries
-                                    {
-                                        Title = "Z axis",
-                                        Values = total_z,
-                                        PointGeometry = null,
-                                    }
-                                };
-
-                                DataContext = this;
-                            });
-
                             break;
                         case "Recording":
                             break;
@@ -266,8 +238,8 @@ namespace Actiwatch
                 (hour + "").PadLeft(2, '0') + ":" +
                 (minute + "").PadLeft(2, '0') + ":" +
                 (second + "").PadLeft(2, '0');
-            //PRINT(timestamp);
-            DateTime taskDate = DateTime.ParseExact(timestamp, "yyyy/MM/dd hh:mm:ss", CultureInfo.InvariantCulture);
+            PRINT(timestamp);
+            DateTime taskDate = DateTime.ParseExact(timestamp, "yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
             long unixTime = ((DateTimeOffset)taskDate).ToUnixTimeSeconds();
 
             float temp = Convert.ToInt32(SensorData[5] + SensorData[4], 16) / 10;
@@ -291,9 +263,9 @@ namespace Actiwatch
                 y *= 4;
                 z *= 4;
                 DateTime dt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(unixTime);
-                string datetime = dt.ToString("yyyy/MM/dd hh:mm:ss");
+                string datetime = dt.ToString("yyyy/MM/dd HH:mm:ss");
 
-                PRINT(String.Format("{0}, {1}, {2}, {3}, {4}, {5}", datetime, temp, light, x, y, z));
+                //PRINT(String.Format("{0}, {1}, {2}, {3}, {4}, {5}", datetime, temp, light, x, y, z));
                 //total_timestamp[flag] = datetime;
                 //total_temp[flag] = temp;
                 //total_light[flag] = light;
@@ -311,7 +283,12 @@ namespace Actiwatch
 
         private void GetPageData(int index)
         {
-            PRINT(index + "");
+            this.Dispatcher.Invoke((Action)(() =>
+            {
+                downloadProgress.Value = (double)index / total_page_number * 100;
+            }));
+            
+            PRINT((double)index / total_page_number * 100 + "");
             state = "GetPageData";
             string getdata = "550504" + Convert.ToString(index, 16).ToUpper().PadLeft(8, '0') + "AA";
             port.Write(HexToByte(getdata), 0, 8);
@@ -358,16 +335,9 @@ namespace Actiwatch
         {
             Console.WriteLine(text);
         }
+        
 
-        private void button_click_4(object sender, RoutedEventArgs e)
-        {
-            state = "gettotalpagenumber";
-
-            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xaa };
-            port.Write(bytestosend, 0, 4);
-            Console.WriteLine("comport write");
-        }
-        private void Sample2_DialogHost_OnDialogOpening(object sender, DialogOpenedEventArgs eventArgs)
+        private void Button_Click_5(object sender, RoutedEventArgs e)
         {
             state = "GetTotalPageNumber";
 
@@ -375,10 +345,5 @@ namespace Actiwatch
             port.Write(bytestosend, 0, 4);
             Console.WriteLine("comport write");
         }
-        private void Sample2_DialogHost_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
-        {
-            Console.WriteLine("End");
-        }
-        
     }
 }

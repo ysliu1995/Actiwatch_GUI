@@ -32,12 +32,13 @@ namespace Actiwatch
 
             chartList = new List<OxyPlot.Wpf.Plot> { Day1, Day2, Day3, Day4, Day5, Day6, Day7 };
             dateList = new List<string>();
-
-            Day1.DataContext = new Day1Model(Global.Dialy_List[0].GetVMDiff());
+            Day1Model a = new Day1Model(Global.Dialy_List[0].GetVMDiff());
+            Day1Model b = new Day1Model(Global.Dialy_List[1].GetVMDiff());
+            Day1.DataContext = a;
             Day1.Title = Global.Dialy_List[0].GetDatetime();
             Day1.TitleFontSize = 10;
             lin1axes.FontSize = 8;
-            Day2.DataContext = new Day2Model(Global.Dialy_List[1].GetVMDiff());
+            Day2.DataContext = b;
             Day2.Title = Global.Dialy_List[1].GetDatetime();
             Day2.TitleFontSize = 10;
             lin2axes.FontSize = 8;

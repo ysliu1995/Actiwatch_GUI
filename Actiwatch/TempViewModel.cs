@@ -9,13 +9,13 @@ namespace Actiwatch
 {
     public class TempViewModel
     {
-        public TempViewModel(float[] light)
+        public TempViewModel(float[] temp)
         {
             this.TempTitle = "Temperature";
             this.TempPoints = new List<DataPoint>();
             for (int i = 0; i < 86400; i++)
             {
-                this.TempPoints.Add(new DataPoint(i, light[i]));
+                this.TempPoints.Add(new DataPoint((double)i / 3600, temp[i]/10));
             }
         }
         public string TempTitle { get; private set; }

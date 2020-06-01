@@ -26,18 +26,6 @@ namespace Actiwatch
             UserControl usc = new DeviceSetting();
             GridMain.Children.Add(usc);
         }
-        private void ButtonOpenMenu_Click(object sender, RoutedEventArgs e)
-        {
-            ButtonCloseMenu.Visibility = Visibility.Visible;
-            ButtonOpenMenu.Visibility = Visibility.Collapsed;
-        }
-
-        private void ButtonCloseMenu_Click(object sender, RoutedEventArgs e)
-        {
-            ButtonCloseMenu.Visibility = Visibility.Collapsed;
-            ButtonOpenMenu.Visibility = Visibility.Visible;
-        }
-
         private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UserControl usc = null;
@@ -47,6 +35,10 @@ namespace Actiwatch
             {
                 case "Download":
                     usc = new DeviceSetting();
+                    GridMain.Children.Add(usc);
+                    break;
+                case "DialyRecord":
+                    usc = new DialyRecord();
                     GridMain.Children.Add(usc);
                     break;
                 case "PhysicalActivity":

@@ -87,13 +87,20 @@
     <Compile Include="Day5Model.cs" />
     <Compile Include="Day6Model.cs" />
     <Compile Include="Day7Model.cs" />
+    <Compile Include="DialyRecord.xaml.cs">
+      <DependentUpon>DialyRecord.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LightViewModel.cs" />
-    <Compile Include="MainViewModel.cs" />
+    <Compile Include="GsensorViewModel.cs" />
     <Compile Include="Sleep.xaml.cs">
       <DependentUpon>Sleep.xaml</DependentUpon>
     </Compile>
     <Compile Include="TempViewModel.cs" />
     <Page Include="DeviceSetting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DialyRecord.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

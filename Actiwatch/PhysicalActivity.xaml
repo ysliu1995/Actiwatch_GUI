@@ -10,8 +10,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="756" d:DesignWidth="1113">
     <Grid>
-        <Button
-            Style="{StaticResource MaterialDesignRaisedDarkButton}"
+        <!--<Button-->
+            <!--Style="{StaticResource MaterialDesignRaisedDarkButton}"
             Width="100"
             ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="37,36,976,688" Click="Button_Click" Content="2"/>
         <Grid>
@@ -38,7 +38,7 @@
                     <oxy:LineSeries ItemsSource="{Binding TempPoints}"/>
                 </oxy:Plot.Series>
             </oxy:Plot>
-        </Grid>
+        </Grid>-->
     </Grid>
     
 

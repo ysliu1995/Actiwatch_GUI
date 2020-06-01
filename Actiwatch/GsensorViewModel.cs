@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Actiwatch
 {
-    public class MainViewModel
+    public class GsensorViewModel
     {
-        public MainViewModel(double[] x)
+        public GsensorViewModel(double[] x)
         {
-            this.Title = "X axis";
+            this.Title = "Vector magnitude";
             this.Points = new List<DataPoint>();
             for(int i = 0; i < 86400; i++)
             {
-                this.Points.Add(new DataPoint(i, x[i]));
+                this.Points.Add(new DataPoint((double)i / 3600, x[i]));
             }
         }
         public string Title { get; private set; }
