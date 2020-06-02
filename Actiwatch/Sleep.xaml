@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="756" d:DesignWidth="1113">
     <Grid>
-        <Grid.ColumnDefinitions>
+        <!--<Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -167,7 +167,7 @@
                                 Minimum="0" Maximum="24" IntervalLength="25" />
                 <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
             </oxy:Plot.Axes>
-        </oxy:Plot>
+        </oxy:Plot>-->
 
     </Grid>
 

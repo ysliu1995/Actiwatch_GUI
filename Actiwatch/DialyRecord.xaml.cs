@@ -14,10 +14,8 @@ namespace Actiwatch
     {
         public static List<DialyData> Dialy_List = new List<DialyData>();
     }
-
     public class DialyData
     {
-
         public string datetime;
         public float[] temp = new float[86400];
         public int[] light = new int[86400];
@@ -90,7 +88,24 @@ namespace Actiwatch
         {
             return this.z;
         }
+
+        public double[] GetPhysicalActivity()
+        {
+            double[] PA = new double[1440];
+            double cpm = 0;
+            for (int i = 0; i < 1440; i++)
+            {
+                cpm = 0;
+                for (int j = 1; j < 60; j++)
+                {
+                    cpm += Math.Abs(this.vm[i * 60 + j] - this.vm[i * 60 + j - 1]);
+                }
+                PA[i] = cpm;
+            }
+            return PA;
+        }
     }
+   
     /// <summary>
     /// DialyRecord.xaml 的互動邏輯
     /// </summary>

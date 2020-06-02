@@ -1,267 +1,321 @@
-﻿using LiveCharts;
-using LiveCharts.Wpf;
-using Microsoft.Win32;
+﻿using OxyPlot.Wpf;
+using OxyPlot;
+using OxyPlot.Annotations;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media;
 using Application = System.Windows.Application;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace Actiwatch
 {
-    /// <summary>
-    /// PhysicalActivity.xaml 的互動邏輯
-    /// </summary>
-    /// 
-    //public class Global
-    //{
-    //    public static List<DialyData> Dialy_List = new List<DialyData>();
-    //}
-
-    //public class DialyData
-    //{
-        
-    //    public string datetime;
-    //    public float[] temp = new float[86400];
-    //    public int[] light = new int[86400];
-    //    public double[] vm = new double[86400];
-    //    public double[] vmDiff = new double[86399];
-    //    public int[] x = new int[86400];
-    //    public int[] y = new int[86400];
-    //    public int[] z = new int[86400];
-    //    public double startRange;
-    //    public double endRange;
-
-    //    public DialyData(string datetime, float[] temp, int[] light, double[] vm, double[] vmDiff, int[] x, int[] y, int[] z)
-    //    {
-    //        this.datetime = datetime;
-    //        this.temp = (float[])temp.Clone();
-    //        this.light = (int[])light.Clone();
-    //        this.vm = (double[])vm.Clone();
-    //        this.vmDiff = (double[])vmDiff.Clone();
-    //        this.x = (int[])x.Clone();
-    //        this.y = (int[])y.Clone();
-    //        this.z = (int[])z.Clone();
-    //        this.startRange = 0;
-    //        this.endRange = 0;
-    //    }
-    //    public void SetStartRange(double startRange)
-    //    {
-    //        this.startRange = startRange;
-    //    }
-    //    public void SetEndRange(double endRange)
-    //    {
-    //        this.endRange = endRange;
-    //    }
-    //    public double GetStartRange()
-    //    {
-    //        return this.startRange;
-    //    }
-    //    public double GetEndRange()
-    //    {
-    //        return this.endRange;
-    //    }
-    //    public string GetDatetime()
-    //    {
-    //        return this.datetime;
-    //    }
-    //    public float[] GetTemp()
-    //    {
-    //        return this.temp;
-    //    }
-    //    public int[] GetLight()
-    //    {
-    //        return this.light;
-    //    }
-    //    public double[] GetVM()
-    //    {
-    //        return this.vm;
-    //    }
-    //    public double[] GetVMDiff()
-    //    {
-    //        return this.vmDiff;
-    //    }
-    //    public int[] GetX()
-    //    {
-    //        return this.x;
-    //    }
-    //    public int[] GetY()
-    //    {
-    //        return this.y;
-    //    }
-    //    public int[] GetZ()
-    //    {
-    //        return this.z;
-    //    }
-    //}
-    
 
     public partial class PhysicalActivity : UserControl
     {
-        
-        
+        private int pageIndex = 1;
+        private List<OxyPlot.Wpf.Plot> chartList;
+        private List<string> dateList;
+        private int lpa = 500;
+        private int mvpa = 2000;
+
 
         public PhysicalActivity()
         {
             InitializeComponent();
+
+            chartList = new List<OxyPlot.Wpf.Plot> { Day1, Day2, Day3, Day4, Day5, Day6, Day7 };
+            dateList = new List<string>();
             
-        }
-        
+            for(int i=0;i < Global.Dialy_List.Count; i++)
+            {
+                showData(i);
+                if (i == 6) break;
+            }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+            for (int i = 0; i < Global.Dialy_List.Count; i++)
+            {
+                dateList.Add(Global.Dialy_List[i].GetDatetime());
+            }
+            if (Global.Dialy_List.Count < 7)
+            {
+                pageContent.Text = String.Format("{0} ~ {1} of {2}", 1, Global.Dialy_List.Count, Global.Dialy_List.Count);
+            }
+            else
+            {
+                pageContent.Text = String.Format("{0} ~ {1} of {2}", 1, 7, Global.Dialy_List.Count);
+            }
+        }
+
+        private void showData(int idx)
         {
-            //OpenFileDialog dialog = new OpenFileDialog();
-            //dialog.Title = "Select file";
-            //dialog.InitialDirectory = ".\\";
-            //dialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            //if (dialog.ShowDialog() == DialogResult.OK)
-            //{
-            //    try
-            //    { // Create an instance of StreamReader to read from a file.
-            //      // The using statement also closes the StreamReader.
-            //        string[] data;
+            switch (idx)
+            {
+                case 0:
+                    Day1.Visibility = Visibility.Visible;
+                    Day1PA.Visibility = Visibility.Visible;
+                    Day1.DataContext = new Day1Model(Global.Dialy_List[(pageIndex - 1) * 7].GetVM());
+                    day1Axes.FontSize = 8;
+                    Day1Date.Text = Global.Dialy_List[(pageIndex - 1) * 7].GetDatetime();
 
-            //        using (StreamReader sr = new StreamReader(dialog.FileName))     //小寫TXT
-            //        {
-            //            String line;
-            //            float[] tmp_temp = new float[86400];
-            //            int[] tmp_light = new int[86400];
-            //            double[] tmp_vm = new double[86400];
-            //            double[] tmp_vm_diff = new double[86399];
-            //            int[] tmp_x = new int[86400];
-            //            int[] tmp_y = new int[86400];
-            //            int[] tmp_z = new int[86400];
-            //            // Read and display lines from the file until the end of
-            //            // the file is reached.
-            //            sr.ReadLine();
-            //            line = sr.ReadLine();
-            //            data = line.Split(',');
-            //            //PRINT(data[0]);
-            //            DateTime taskDate = DateTime.ParseExact(data[0], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-            //            long FirstUnixTime = ((DateTimeOffset)taskDate).ToUnixTimeSeconds();
-            //            DateTime InitialDate = DateTime.ParseExact(data[0].Split(' ')[0], "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            //            long InitialUnixTime = ((DateTimeOffset)InitialDate).ToUnixTimeSeconds();
-            //            //PRINT(InitialUnixTime + "");
-            //            //PRINT(FirstUnixTime + "");
-            //            long PreTime = FirstUnixTime - InitialUnixTime + 1;
-            //            int index = Convert.ToInt32(PreTime);
-            //            for (int i = 0; i < PreTime; i++)
-            //            {
-            //                tmp_temp[i] = 0;
-            //                tmp_light[i] = 0;
-            //                tmp_vm[i] = 0;
-            //                tmp_x[i] = 0;
-            //                tmp_y[i] = 0;
-            //                tmp_z[i] = 0;
-            //            }
-            //            tmp_temp[index] = float.Parse(data[1]);
-            //            tmp_light[index] = Convert.ToInt32(data[2]);
-            //            tmp_vm[index] = Math.Sqrt(Math.Pow(Convert.ToDouble(data[3]), 2) + Math.Pow(Convert.ToDouble(data[4]), 2) + Math.Pow(Convert.ToDouble(data[5]), 2));
-            //            tmp_x[index] = Convert.ToInt32(data[3]);
-            //            tmp_y[index] = Convert.ToInt32(data[4]);
-            //            tmp_z[index] = Convert.ToInt32(data[5]);
-            //            index++;
-            //            while ((line = sr.ReadLine()) != null)
-            //            {
-            //                data = line.Split(',');
-                            
-            //                tmp_temp[index] = float.Parse(data[1]);
-            //                tmp_light[index] = Convert.ToInt32(data[2]);
-            //                tmp_vm[index] = Math.Sqrt(Math.Pow(Convert.ToDouble(data[3]), 2) + Math.Pow(Convert.ToDouble(data[4]), 2) + Math.Pow(Convert.ToDouble(data[5]), 2));
-            //                tmp_x[index] = Convert.ToInt32(data[3]);
-            //                tmp_y[index] = Convert.ToInt32(data[4]);
-            //                tmp_z[index] = Convert.ToInt32(data[5]);
-            //                index++;
-            //                if(index == 86400)
-            //                {
-            //                    for(int i = 0; i < 86399; i++)
-            //                    {
-            //                        tmp_vm_diff[i] = Math.Pow(tmp_vm[i + 1] - tmp_vm[i], 2);
-            //                    }
-            //                    DialyData tmp = new DialyData(data[0].Split(' ')[0], tmp_temp, tmp_light, tmp_vm, tmp_vm_diff, tmp_x, tmp_y, tmp_z);
-            //                    Global.Dialy_List.Add(tmp);
-            //                    index = 0;
-            //                    for(int i = 0; i < 86400; i++)
-            //                    {
-            //                        tmp_temp[i] = 0;
-            //                        tmp_light[i] = 0;
-            //                        tmp_vm[i] = 0;
-            //                        tmp_x[i] = 0;
-            //                        tmp_y[i] = 0;
-            //                        tmp_z[i] = 0;
-            //                    }
-            //                }
-            //            }
-            //            if(index < 86400)
-            //            {
-                            
-            //                for(int i = index; i < 86400; i++)
-            //                {
-            //                    tmp_temp[i] = 0;
-            //                    tmp_light[i] = 0;
-            //                    tmp_vm[i] = 0;
-            //                    tmp_x[i] = 0;
-            //                    tmp_y[i] = 0;
-            //                    tmp_z[i] = 0;
-            //                }
-            //                for (int i = 0; i < 86399; i++)
-            //                {
-            //                    tmp_vm_diff[i] = Math.Pow(tmp_vm[i + 1] - tmp_vm[i], 2);
-            //                }
-            //                DialyData tmp = new DialyData(data[0].Split(' ')[0], tmp_temp, tmp_light, tmp_vm, tmp_vm_diff, tmp_x, tmp_y, tmp_z);
-            //                Global.Dialy_List.Add(tmp);
-            //            }
-            //            PRINT(Global.Dialy_List.Count + "");
-            //            DialyCombo.Items.Clear();
-            //            foreach (DialyData dialy in Global.Dialy_List)
-            //            {
-            //                DialyCombo.Items.Add(dialy.GetDatetime());
-            //                if (DialyCombo.Items.Count > 0)
-            //                {
-            //                    DialyCombo.SelectedIndex = 0;
-            //                }
-            //            }
-
-            //            Application.Current.Dispatcher.Invoke(() =>
-            //            {
-            //                Gsensor.DataContext = new MainViewModel(Global.Dialy_List[0].GetVM());
-            //                Light.DataContext = new LightViewModel(Global.Dialy_List[0].GetLight());
-            //                Temp.DataContext = new TempViewModel(Global.Dialy_List[0].GetTemp());
-            //            });
-            //        }
-            //    }
-            //    catch (Exception err)
-            //    {
-            //        // Let the user know what went wrong.
-            //        Console.WriteLine("The file could not be read:");
-            //        Console.WriteLine(err.Message);
-            //    }
-            //}
+                    double[] pa1 = Global.Dialy_List[(pageIndex - 1) * 7].GetPhysicalActivity();
+                    Day1PA.Annotations.Clear();
+                    Day1PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = 0, MaximumX = 1440, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 1, 180, 104) });
+                    for (int i = 0; i < pa1.Length; i++)
+                    {
+                        if (pa1[i] >= mvpa)
+                        {
+                            Day1PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i + 1, MaximumX = i + 2, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 255, 117, 117), Stroke = Color.FromArgb(120, 0, 0, 0), StrokeThickness = 1 });
+                        }
+                        else if (pa1[i] >= lpa)
+                        {
+                            Day1PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i + 1, MaximumX = i + 2, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 0, 128, 255) });
+                        }
+                    }
+                    Day1PA.InvalidatePlot(true);
+                    break;
+                case 1:
+                    Day2.Visibility = Visibility.Visible;
+                    Day2PA.Visibility = Visibility.Visible;
+                    Day2.DataContext = new Day2Model(Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetVM());
+                    day2Axes.FontSize = 8;
+                    Day2Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetDatetime();
+                    double[] pa2 = Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetPhysicalActivity();
+                    Day2PA.Annotations.Clear();
+                    Day2PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = 0, MaximumX = 1440, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 1, 180, 104) });
+                    for (int i = 0; i < pa2.Length; i++)
+                    {
+                        if (pa2[i] >= mvpa)
+                        {
+                            Day2PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 255, 117, 117) });
+                        }
+                        else if (pa2[i] >= lpa)
+                        {
+                            Day2PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 0, 128, 255) });
+                        }
+                    }
+                    Day2PA.InvalidatePlot(true);
+                    break;
+                case 2:
+                    Day3.Visibility = Visibility.Visible;
+                    Day3PA.Visibility = Visibility.Visible;
+                    Day3.DataContext = new Day3Model(Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetVM());
+                    day3Axes.FontSize = 8;
+                    Day3Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetDatetime();
+                    double[] pa3 = Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetPhysicalActivity();
+                    Day3PA.Annotations.Clear();
+                    Day3PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = 0, MaximumX = 1440, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 1, 180, 104) });
+                    for (int i = 0; i < pa3.Length; i++)
+                    {
+                        if (pa3[i] >= mvpa)
+                        {
+                            Day3PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 255, 117, 117) });
+                        }
+                        else if (pa3[i] >= lpa)
+                        {
+                            Day3PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 0, 128, 255) });
+                        }
+                    }
+                    Day3PA.InvalidatePlot(true);
+                    break;
+                case 3:
+                    Day4.Visibility = Visibility.Visible;
+                    Day4PA.Visibility = Visibility.Visible;
+                    Day4.DataContext = new Day4Model(Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetVM());
+                    day4Axes.FontSize = 8;
+                    Day4Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetDatetime();
+                    double[] pa4 = Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetPhysicalActivity();
+                    Day4PA.Annotations.Clear();
+                    Day4PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = 0, MaximumX = 1440, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 1, 180, 104) });
+                    for (int i = 0; i < pa4.Length; i++)
+                    {
+                        if (pa4[i] >= mvpa)
+                        {
+                            Day4PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 255, 117, 117) });
+                        }
+                        else if (pa4[i] >= lpa)
+                        {
+                            Day4PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 0, 128, 255) });
+                        }
+                    }
+                    Day4PA.InvalidatePlot(true);
+                    break;
+                case 4:
+                    Day5.Visibility = Visibility.Visible;
+                    Day5PA.Visibility = Visibility.Visible;
+                    Day5.DataContext = new Day5Model(Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetVM());
+                    day5Axes.FontSize = 8;
+                    Day5Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetDatetime();
+                    double[] pa5 = Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetPhysicalActivity();
+                    Day5PA.Annotations.Clear();
+                    Day5PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = 0, MaximumX = 1440, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 1, 180, 104) });
+                    for (int i = 0; i < pa5.Length; i++)
+                    {
+                        if (pa5[i] >= mvpa)
+                        {
+                            Day5PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 255, 117, 117) });
+                        }
+                        else if (pa5[i] >= lpa)
+                        {
+                            Day5PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 0, 128, 255) });
+                        }
+                    }
+                    Day5PA.InvalidatePlot(true);
+                    break;
+                case 5:
+                    Day6.Visibility = Visibility.Visible;
+                    Day6PA.Visibility = Visibility.Visible;
+                    Day6.DataContext = new Day6Model(Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetVM());
+                    day6Axes.FontSize = 8;
+                    Day6Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetDatetime();
+                    double[] pa6 = Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetPhysicalActivity();
+                    Day6PA.Annotations.Clear();
+                    Day6PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = 0, MaximumX = 1440, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 1, 180, 104) });
+                    for (int i = 0; i < pa6.Length; i++)
+                    {
+                        if (pa6[i] >= mvpa)
+                        {
+                            Day6PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 255, 117, 117) });
+                        }
+                        else if (pa6[i] >= lpa)
+                        {
+                            Day6PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 0, 128, 255) });
+                        }
+                    }
+                    Day6PA.InvalidatePlot(true);
+                    break;
+                case 6:
+                    Day7.Visibility = Visibility.Visible;
+                    Day7PA.Visibility = Visibility.Visible;
+                    Day7.DataContext = new Day7Model(Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetVM());
+                    day7Axes.FontSize = 8;
+                    Day7Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetDatetime();
+                    double[] pa7 = Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetPhysicalActivity();
+                    Day7PA.Annotations.Clear();
+                    Day7PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = 0, MaximumX = 1440, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 1, 180, 104) });
+                    for (int i = 0; i < pa7.Length; i++)
+                    {
+                        if (pa7[i] >= mvpa)
+                        {
+                            Day7PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 255, 117, 117) });
+                        }
+                        else if (pa7[i] >= lpa)
+                        {
+                            Day7PA.Annotations.Add(new OxyPlot.Wpf.RectangleAnnotation() { MinimumX = i, MaximumX = i + 1, MinimumY = 0, MaximumY = 1, Fill = Color.FromArgb(120, 0, 128, 255) });
+                        }
+                    }
+                    Day7PA.InvalidatePlot(true);
+                    break;
+                default:
+                    break;
+            }
         }
-        private void PRINT(string text)
+
+        private void HiddenData(int idx)
+        {
+            switch (idx)
+            {
+                case 0:
+                    Day1.Visibility = Visibility.Hidden;
+                    Day1PA.Visibility = Visibility.Hidden;
+                    Day1Date.Text = "";
+                    break;
+                case 1:
+                    Day2.Visibility = Visibility.Hidden;
+                    Day2PA.Visibility = Visibility.Hidden;
+                    Day2Date.Text = "";
+                    break;
+                case 2:
+                    Day3.Visibility = Visibility.Hidden;
+                    Day3PA.Visibility = Visibility.Hidden;
+                    Day3Date.Text = "";
+                    break;
+                case 3:
+                    Day4.Visibility = Visibility.Hidden;
+                    Day4PA.Visibility = Visibility.Hidden;
+                    Day4Date.Text = "";
+                    break;
+                case 4:
+                    Day5.Visibility = Visibility.Hidden;
+                    Day5PA.Visibility = Visibility.Hidden;
+                    Day5Date.Text = "";
+                    break;
+                case 5:
+                    Day6.Visibility = Visibility.Hidden;
+                    Day6PA.Visibility = Visibility.Hidden;
+                    Day6Date.Text = "";
+                    break;
+                case 6:
+                    Day7.Visibility = Visibility.Hidden;
+                    Day7PA.Visibility = Visibility.Hidden;
+                    Day7Date.Text = "";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void print(string text)
         {
             Console.WriteLine(text);
         }
 
-        private void DialyCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void leftButton(object sender, MouseButtonEventArgs e)
         {
-            //int index = DialyCombo.SelectedIndex;
-            //PRINT(index+"");
-            //Application.Current.Dispatcher.Invoke(() =>
-            //{
-            //    // UI modify
-            //    Gsensor.DataContext = new MainViewModel(Global.Dialy_List[index].GetVM());
-            //    Light.DataContext = new LightViewModel(Global.Dialy_List[index].GetLight());
-            //    Temp.DataContext = new TempViewModel(Global.Dialy_List[index].GetTemp());
-            //});
+            if (pageIndex > 1)
+            {
+                pageIndex--;
+                if (Global.Dialy_List.Count < (pageIndex * 7))
+                {
+                    pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, Global.Dialy_List.Count, Global.Dialy_List.Count);
+                    for (int i = (pageIndex - 1) * 7; i < Global.Dialy_List.Count; i++)
+                    {
+                        showData(i % 7);
+                    }
+                    for (int i = Global.Dialy_List.Count; i < (pageIndex * 7); i++)
+                    {
+                        HiddenData(i % 7);
+                    }
+                }
+                else
+                {
+                    pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, pageIndex * 7, Global.Dialy_List.Count);
+                    for (int i = (pageIndex - 1) * 7; i < pageIndex * 7; i++)
+                    {
+                        showData(i % 7);
+                    }
+                }
+            }
+        }
+        private void rightButton(object sender, MouseButtonEventArgs e)
+        {
+            if (pageIndex < ((float)Global.Dialy_List.Count / 7))
+            {
+                pageIndex++;
+                if (Global.Dialy_List.Count < (pageIndex * 7))
+                {
+                    pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, Global.Dialy_List.Count, Global.Dialy_List.Count);
+                    for(int i = (pageIndex - 1) * 7;i< Global.Dialy_List.Count; i++)
+                    {
+                        showData(i % 7);
+                    }
+                    for (int i = Global.Dialy_List.Count; i < (pageIndex * 7); i++)
+                    {
+                        print(i+"");
+                        HiddenData(i % 7);
+                    }
+                }
+                else
+                {
+                    pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, pageIndex * 7, Global.Dialy_List.Count);
+                    for (int i = (pageIndex - 1) * 7; i < pageIndex * 7; i++)
+                    {
+                        showData(i % 7);
+                    }
+                }
+            }
         }
     }
 }

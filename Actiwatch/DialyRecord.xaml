@@ -25,6 +25,7 @@
         <Grid Grid.Row="0" Grid.Column="0">
             <Button
             Style="{StaticResource MaterialDesignRaisedDarkButton}"
+            HorizontalAlignment="center"
             Width="200"
             Margin="20"
             ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  Content="Choose File" Click="Button_Click" />
