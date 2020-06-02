@@ -4,52 +4,137 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d">
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid>
-            <Button
-            Style="{StaticResource MaterialDesignRaisedDarkButton}"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="44,42,925,682" Click="Button_Click_2">
-                Comport Serach
-            </Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Button
+                    x:Name="searchButton"
+                    Margin="15"
+                    Height="40"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  Click="Button_Click_2">
+                    Comport Serach
+                </Button>
+            </Grid>
+            <Grid Grid.Column="1">
+                <ComboBox x:Name="ComportCombo"  materialDesign:HintAssist.Hint="" Height="32" Margin="15" />
+            </Grid>
+            <Grid  Grid.Column="2">
+                <Button
+                    x:Name="connectButton"
+                    Margin="15"
+                    Height="40"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  Click="Button_Click_1">
+                    Connect
+                </Button>
+            </Grid>
+            <Grid  Grid.Column="3">
+                <Button
+                    x:Name="disconnectButton"
+                    Margin="15"
+                    Height="40"
+                    IsEnabled="False"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"
+                    Click="DisconnectButton_Click">
+                    Disconnect
+                </Button>
+            </Grid>
         </Grid>
-        <Grid>
-            <ComboBox x:Name="ComportCombo"  materialDesign:HintAssist.Hint="" Height="32" Margin="212,41,757,683">
-            </ComboBox>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid  Grid.Column="1">
+                <StackPanel Orientation="Vertical">
+                    <Button
+                        x:Name="stopButton"
+                        Margin="15"
+                        Height="30"
+                        IsEnabled="False"
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  >
+                        Stop recording
+                    </Button>
+                    <Button
+                        x:Name="downloadButton"
+                        Margin="15"
+                        Height="30"
+                        IsEnabled="False"
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Click="Button_Click_5"  >
+                        Download
+                    </Button>
+                    <Button
+                        x:Name="clearButton"
+                        Margin="15"
+                        Height="30"
+                        IsEnabled="False"
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  >
+                        Clear Flash
+                    </Button>
+                    <Button
+                        x:Name="recordingButton"
+                        Margin="15"
+                        Height="30"
+                        IsEnabled="False"
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Click="Button_Click_3" >
+                        Recording
+                    </Button>
+                    <TextBox
+                        Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                        Margin="10"
+                        VerticalAlignment="Top"
+                        Height="auto"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto"
+                        materialDesign:HintAssist.Hint="This is a text area"
+                        IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+            <Grid  Grid.Column="0">
+                <oxy:Plot x:Name="downloadData" Visibility="Hidden" Margin="20">
+                    <oxy:Plot.Series>
+                        <oxy:LineSeries ItemsSource="{Binding xPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
+                        <oxy:LineSeries ItemsSource="{Binding yPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
+                        <oxy:LineSeries ItemsSource="{Binding zPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
+                    </oxy:Plot.Series>
+                    <oxy:Plot.Axes>
+                        <oxy:LinearAxis Position="Bottom" Title="points"/>
+                        <oxy:LinearAxis Position="Left" Title="mg"/>
+                    </oxy:Plot.Axes>
+                </oxy:Plot>
+                <StackPanel x:Name="downloadProgressPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden">
+                    <TextBlock x:Name="progressPercentage" HorizontalAlignment="Center">
+                        Downloading...(0.00 %)
+                    </TextBlock>
+                    <ProgressBar
+                        x:Name="downloadProgress"
+                        Value="0"
+                        Height="10"
+                        materialDesign:TransitionAssist.DisableTransitions="True"  HorizontalAlignment="Center" Width="368"  />
+                </StackPanel>
+            </Grid>
         </Grid>
-        <Grid>
-            <Button
-            Style="{StaticResource MaterialDesignRaisedDarkButton}"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="379,44,590,680" Click="Button_Click_1">
-                Connect
-            </Button>
-        </Grid>
-        <Grid>
-            <Button
-            Style="{StaticResource MaterialDesignRaisedDarkButton}"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="210,91,757,633">
-                Clear
-            </Button>
-        </Grid>
-        <Grid>
-            <Button
-            Style="{StaticResource MaterialDesignRaisedDarkButton}"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="44,92,923,632" Click="Button_Click_5" >
-                Download
-            </Button>
-        </Grid>
-        <Grid>
-            <Button
-            Style="{StaticResource MaterialDesignRaisedDarkButton}"
-            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Margin="380,92,587,632" Click="Button_Click_3">
-                Recording
-            </Button>
-        </Grid>
-        <Grid/>
-        <ProgressBar
-            x:Name="downloadProgress"
-              Value="50"
-              materialDesign:TransitionAssist.DisableTransitions="True" Margin="0,394,178,358" HorizontalAlignment="Right" Width="690" />
+        
 
     </Grid>
 </UserControl>

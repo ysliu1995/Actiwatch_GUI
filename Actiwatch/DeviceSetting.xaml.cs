@@ -26,26 +26,19 @@ namespace Actiwatch
     /// </summary>
     public partial class DeviceSetting : UserControl
     {
-        public SeriesCollection SeriesCollection { get; set; }
-        public string[] Labels { get; set; }
-        public Func<double, string> YFormatter { get; set; }
-        
         private SerialPort port;
         private string state;
         private int total_page_number;
         private int index;
         private string[] SensorData = new string[256];
-
         private string[] total_timestamp;
-        private ChartValues<float> total_temp = new ChartValues<float>();
-        private ChartValues<int> total_light = new ChartValues<int>();
-        private ChartValues<int> total_x = new ChartValues<int>();
-        private ChartValues<int> total_y = new ChartValues<int>();
-        private ChartValues<int> total_z = new ChartValues<int>();
-
-        int flag = 0;
-
-
+        private List<string> total_time = new List<string>();
+        private List<double> total_temp = new List<double>();
+        private List<double> total_light = new List<double>();
+        private List<double> total_x = new List<double>();
+        private List<double> total_y = new List<double>();
+        private List<double> total_z = new List<double>();
+        private Thread readThread;
 
 
         public DeviceSetting()
@@ -53,11 +46,6 @@ namespace Actiwatch
             InitializeComponent();
 
             GetComport();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -80,14 +68,21 @@ namespace Actiwatch
                 if ((port != null) && (!port.IsOpen))
                 {
                     port.Open();
-                    //CancellationTokenSource cts = new CancellationTokenSource();
-                    //Task task = Task.Run(() => receive(), cts.Token);
-                    Thread readThread = new Thread(receive);
-                    readThread.Start();
-                    Console.WriteLine("Comport opened");
+                    if (port.IsOpen)
+                    {
+                        readThread = new Thread(receive);
+                        readThread.Start();
+                        Console.WriteLine("Comport opened");
+
+                        searchButton.IsEnabled = false;
+                        connectButton.IsEnabled = false;
+                        disconnectButton.IsEnabled = true;
+                        stopButton.IsEnabled = true;
+                        downloadButton.IsEnabled = true;
+                        clearButton.IsEnabled = true;
+                        recordingButton.IsEnabled = true;
+                    }
                 }
-                //port.DataReceived += ceive;
-                
             }
             catch (Exception error)
             {
@@ -107,13 +102,17 @@ namespace Actiwatch
             ComportCombo.Items.Clear();
             foreach (string serialPort in ports)
             {
-                ComportCombo.Items.Add(serialPort);
-                if (ComportCombo.Items.Count > 0)
+                if (!serialPort.Equals("COM1"))
                 {
-                    ComportCombo.SelectedIndex = 0;
+                    ComportCombo.Items.Add(serialPort);
+                    if (ComportCombo.Items.Count > 0)
+                    {
+                        ComportCombo.SelectedIndex = 0;
+                    }
                 }
             }
         }
+
         private void receive()
         {
             while (true)
@@ -131,13 +130,7 @@ namespace Actiwatch
                         case "GetTotalPageNumber":
                             PRINT("start get total page number");
                             total_page_number = GetTotalPageNumber(data);
-                            //total_page_number = 100;
                             total_timestamp = new string[total_page_number * 40];
-                            //total_temp = new ChartValues<float>[total_page_number * 40];
-                            //total_light = new int[total_page_number * 40];
-                            //total_x= new int[total_page_number * 40];
-                            //total_y = new int[total_page_number * 40];
-                            //total_z = new int[total_page_number * 40];
 
                             PRINT("Total page number : " + total_page_number);
                             if (total_page_number < 1)
@@ -172,6 +165,15 @@ namespace Actiwatch
                             }
                             break;
                         case "Stop":
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                downloadProgressPanel.Visibility = Visibility.Hidden;
+                                downloadData.Visibility = Visibility.Visible;
+                                downloadData.DataContext = new DownloadDataModel(total_x, total_y, total_z);
+
+                                System.Windows.Forms.FolderBrowserDialog path = new System.Windows.Forms.FolderBrowserDialog();
+                                path.ShowDialog();
+                            });
                             break;
                         case "Recording":
                             break;
@@ -242,10 +244,8 @@ namespace Actiwatch
             DateTime taskDate = DateTime.ParseExact(timestamp, "yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
             long unixTime = ((DateTimeOffset)taskDate).ToUnixTimeSeconds();
 
-            float temp = Convert.ToInt32(SensorData[5] + SensorData[4], 16) / 10;
+            float temp = Convert.ToInt32(SensorData[5] + SensorData[4], 16);
             int light = Convert.ToInt32(SensorData[7] + SensorData[6], 16);
-            //PRINT(temp+"");
-            //PRINT(light+"");
 
 
             for (int j = 0; j < 40; j++)
@@ -264,14 +264,8 @@ namespace Actiwatch
                 z *= 4;
                 DateTime dt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(unixTime);
                 string datetime = dt.ToString("yyyy/MM/dd HH:mm:ss");
-
-                //PRINT(String.Format("{0}, {1}, {2}, {3}, {4}, {5}", datetime, temp, light, x, y, z));
-                //total_timestamp[flag] = datetime;
-                //total_temp[flag] = temp;
-                //total_light[flag] = light;
-                //total_x[flag] = x;
-                //total_y[flag] = y;
-                //total_z[flag] = z;
+                
+                total_time.Add(datetime);
                 total_temp.Add(temp);
                 total_light.Add(light);
                 total_x.Add(x);
@@ -286,6 +280,7 @@ namespace Actiwatch
             this.Dispatcher.Invoke((Action)(() =>
             {
                 downloadProgress.Value = (double)index / total_page_number * 100;
+                progressPercentage.Text = String.Format("Downloading...({0:0.00} %)", (double)index / total_page_number * 100);
             }));
             
             PRINT((double)index / total_page_number * 100 + "");
@@ -339,11 +334,32 @@ namespace Actiwatch
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
+            downloadProgressPanel.Visibility = Visibility.Visible;
+
             state = "GetTotalPageNumber";
 
             byte[] bytestosend = { 0x55, 0x04, 0x00, 0xaa };
             port.Write(bytestosend, 0, 4);
             Console.WriteLine("comport write");
+        }
+
+        private void DisconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (port.IsOpen)
+            {
+                readThread.Suspend();
+                port.Dispose();
+                if (!port.IsOpen)
+                {
+                    searchButton.IsEnabled = true;
+                    connectButton.IsEnabled = true;
+                    disconnectButton.IsEnabled = false;
+                    stopButton.IsEnabled = false;
+                    downloadButton.IsEnabled = false;
+                    clearButton.IsEnabled = false;
+                    recordingButton.IsEnabled = false;
+                }
+            }
         }
     }
 }

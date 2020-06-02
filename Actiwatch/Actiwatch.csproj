@@ -87,10 +87,10 @@
     <Compile Include="Day5Model.cs" />
     <Compile Include="Day6Model.cs" />
     <Compile Include="Day7Model.cs" />
-    <Compile Include="DialyData.cs" />
     <Compile Include="DialyRecord.xaml.cs">
       <DependentUpon>DialyRecord.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DownloadDataModel.cs" />
     <Compile Include="LightViewModel.cs" />
     <Compile Include="GsensorViewModel.cs" />
     <Compile Include="Sleep.xaml.cs">
