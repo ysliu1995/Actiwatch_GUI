@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,5 +54,14 @@ namespace Actiwatch
                     break;
             }
         }
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            DeviceSetting ds = new DeviceSetting();
+            if(ds.timer != null)
+            {
+                ds.timer.Stop();
+            }
+        }
+
     }
 }

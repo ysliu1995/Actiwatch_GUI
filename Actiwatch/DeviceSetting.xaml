@@ -68,7 +68,7 @@
                         Height="30"
                         IsEnabled="False"
                         Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  >
+                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Click="StopButton_Click"  >
                         Stop recording
                     </Button>
                     <Button
@@ -86,7 +86,7 @@
                         Height="30"
                         IsEnabled="False"
                         Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  >
+                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Click="ClearButton_Click" >
                         Clear Flash
                     </Button>
                     <Button
@@ -99,18 +99,56 @@
                         Recording
                     </Button>
                     <TextBox
+                        x:Name="debugText"
                         Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
                         Margin="10"
+                        IsReadOnly="True"
                         VerticalAlignment="Top"
                         Height="auto"
                         AcceptsReturn="True"
                         TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto"
-                        materialDesign:HintAssist.Hint="This is a text area"
-                        IsEnabled="False" />
+                        VerticalScrollBarVisibility="Auto" />
                 </StackPanel>
             </Grid>
             <Grid  Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="75"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="15">
+                            <TextBlock
+                                FontSize="20"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource MaterialDesignButtonTextBlock}">
+                              Device status : 
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="deviceStatus"
+                                FontSize="20"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource MaterialDesignButtonTextBlock}">
+                              Disconnected
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontSize="20" Text="Battery : " VerticalAlignment="Center" />
+                            <TextBlock x:Name="batteryStatus" FontSize="20" Text="0 %" VerticalAlignment="Center" />
+                            <materialDesign:PackIcon x:Name="batteryImage" Kind="Battery0" Height="25" Width="25" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="0">
+
+                </Grid>
                 <oxy:Plot x:Name="downloadData" Visibility="Hidden" Margin="20">
                     <oxy:Plot.Series>
                         <oxy:LineSeries ItemsSource="{Binding xPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>

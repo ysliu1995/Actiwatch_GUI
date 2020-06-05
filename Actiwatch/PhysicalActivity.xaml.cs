@@ -19,7 +19,7 @@ namespace Actiwatch
         private List<OxyPlot.Wpf.Plot> chartList;
         private List<string> dateList;
         private int lpa = 500;
-        private int mvpa = 2000;
+        private int mvpa = 4000;
 
 
         public PhysicalActivity()
@@ -33,6 +33,13 @@ namespace Actiwatch
             {
                 showData(i);
                 if (i == 6) break;
+            }
+            if(Global.Dialy_List.Count < 7)
+            {
+                for(int i= Global.Dialy_List.Count; i < 7; i++)
+                {
+                    HiddenData(i);
+                }
             }
 
             for (int i = 0; i < Global.Dialy_List.Count; i++)

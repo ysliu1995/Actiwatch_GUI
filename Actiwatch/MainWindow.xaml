@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Actiwatch"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1600"
+        Title="iSleepBetter" Height="900" Width="1600"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
          TextElement.Foreground="{DynamicResource MaterialDesignBody}"
          TextElement.FontWeight="Regular"
@@ -13,29 +13,30 @@
          TextOptions.TextFormattingMode="Ideal"
          TextOptions.TextRenderingMode="Auto"
          Background="{DynamicResource MaterialDesignPaper}"
-         FontFamily="{DynamicResource MaterialDesignFont}">
+         FontFamily="{DynamicResource MaterialDesignFont}"
+        Closing="Window_Closing">
     <Grid Background="#FFFFFF">
-        <!--定義行-->
         <Grid.ColumnDefinitions>
-            <!--*為比例，每行寬度為1/3-->
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <!--*為比例，每列高度為1/2-->
             <RowDefinition Height="75"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <materialDesign:ColorZone
-                  Mode="PrimaryLight"
+                  Mode="PrimaryDark"
                 Height="75">
                 <StackPanel
                     Orientation="Horizontal">
                     <TextBlock
-                      VerticalAlignment="Center"
-                      Margin="16 0 0 0">
-                    XXX
+                        Foreground="White"
+                        FontSize="24"
+                        FontStyle="Oblique"
+                        Margin="10"
+                        VerticalAlignment="Center">
+                        Acti-watch
                     </TextBlock>
                 </StackPanel>
             </materialDesign:ColorZone>
