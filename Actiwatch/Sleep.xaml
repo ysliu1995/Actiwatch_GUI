@@ -7,10 +7,11 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:local="clr-namespace:Actiwatch"
              mc:Ignorable="d" 
-             d:DesignHeight="756" d:DesignWidth="1113">
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -22,7 +23,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Grid.Column="0">
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -49,7 +50,7 @@
                     <DatePicker
                       x:Name="startDate"
                       materialDesign:HintAssist.Hint="Pick Date"
-                      Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />      
+                      Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
                     <DatePicker
@@ -98,77 +99,127 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <oxy:Plot Grid.Row="1" Grid.Column="0" x:Name="Day1" Title="{Binding Day1title}" >
-            <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Day1Points}"/>
-            </oxy:Plot.Series>
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Name="lin1axes" Position="Bottom"
+        <Grid Grid.Row="1" Grid.Column="0">
+            <TextBlock x:Name="Day1Date" Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                2020-06-02
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <oxy:Plot  x:Name="Day1" Title="{Binding Day1title}" >
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day1Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="day1Axes" Position="Bottom"
                                 Minimum="0" Maximum="24" IntervalLength="25" />
-                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
-            </oxy:Plot.Axes>
-        </oxy:Plot>
-        <oxy:Plot Grid.Row="2" Grid.Column="0" x:Name="Day2" Title="{Binding Day2title}" >
-            <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Day2Points}"/>
-            </oxy:Plot.Series>
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Name="lin2axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
-                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
-            </oxy:Plot.Axes>
-        </oxy:Plot>
-        <oxy:Plot Grid.Row="3" Grid.Column="0" x:Name="Day3" Title="{Binding Day3title}" >
-            <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Day3Points}"/>
-            </oxy:Plot.Series>
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Name="lin3axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
-                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
-            </oxy:Plot.Axes>
-        </oxy:Plot>
-        <oxy:Plot Grid.Row="4" Grid.Column="0" x:Name="Day4" Title="{Binding Day4title}" >
-            <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Day4Points}"/>
-            </oxy:Plot.Series>
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Name="lin4axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
-                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
-            </oxy:Plot.Axes>
-        </oxy:Plot>
-        <oxy:Plot Grid.Row="5" Grid.Column="0" x:Name="Day5" Title="{Binding Day5title}" >
-            <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Day5Points}"/>
-            </oxy:Plot.Series>
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Name="lin5axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
-                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
-            </oxy:Plot.Axes>
-        </oxy:Plot>
-        <oxy:Plot Grid.Row="6" Grid.Column="0" x:Name="Day6" Title="{Binding Day6title}" >
-            <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Day6Points}"/>
-            </oxy:Plot.Series>
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Name="lin6axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
-                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
-            </oxy:Plot.Axes>
-        </oxy:Plot>
-        <oxy:Plot Grid.Row="7" Grid.Column="0" x:Name="Day7" Title="{Binding Day7title}" >
-            <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Day7Points}"/>
-            </oxy:Plot.Series>
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis Name="lin7axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
-                <oxy:LinearAxis Position="Left" IsAxisVisible="False"/>
-            </oxy:Plot.Axes>
-        </oxy:Plot>-->
+                    <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+        </Grid>
 
+        <Grid Grid.Row="2" Grid.Column="0">
+            <TextBlock x:Name="Day2Date" Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                2020-06-02
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="2" Grid.Column="1">
+            <oxy:Plot x:Name="Day2" Title="{Binding Day2title}" >
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day2Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="day2Axes" Position="Bottom"
+                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0">
+            <TextBlock x:Name="Day3Date" Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                2020-06-02
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="3" Grid.Column="1">
+            <oxy:Plot x:Name="Day3" Title="{Binding Day3title}" >
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day3Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="day3Axes" Position="Bottom"
+                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+        </Grid>
+
+        <Grid Grid.Row="4" Grid.Column="0">
+            <TextBlock x:Name="Day4Date" Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                2020-06-02
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="4" Grid.Column="1">
+            <oxy:Plot x:Name="Day4" Title="{Binding Day4title}" >
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day4Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="day4Axes" Position="Bottom"
+                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+        </Grid>
+        <Grid Grid.Row="5" Grid.Column="0">
+            <TextBlock x:Name="Day5Date" Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                2020-06-02
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="5" Grid.Column="1">
+            <oxy:Plot x:Name="Day5" Title="{Binding Day5title}" >
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day5Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="day5Axes" Position="Bottom"
+                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+        </Grid>
+        <Grid Grid.Row="6" Grid.Column="0">
+            <TextBlock x:Name="Day6Date" Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                2020-06-02
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="6" Grid.Column="1">
+            <oxy:Plot x:Name="Day6" Title="{Binding Day6title}" >
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day6Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="day6Axes" Position="Bottom"
+                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+        </Grid>
+        <Grid Grid.Row="7" Grid.Column="0">
+            <TextBlock x:Name="Day7Date" Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                2020-06-02
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="7" Grid.Column="1">
+            <oxy:Plot x:Name="Day7" Title="{Binding Day7title}" >
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding Day7Points}"/>
+                </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Name="day7Axes" Position="Bottom"
+                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
+                </oxy:Plot.Axes>
+            </oxy:Plot>
+        </Grid>
     </Grid>
-
 </UserControl>
