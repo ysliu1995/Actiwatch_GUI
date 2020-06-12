@@ -31,6 +31,14 @@
         <Grid Grid.Row="0" Grid.Column="1">
             <ComboBox x:Name="DialyCombo"  materialDesign:HintAssist.Hint="" Height="32" Margin="20" SelectionChanged="DialyCombo_SelectionChanged" />
         </Grid>
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Button
+            Style="{StaticResource MaterialDesignRaisedDarkButton}"
+            HorizontalAlignment="center"
+            Width="200"
+            Margin="20"
+            ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  Content="Douwnload" Click="Button_Click_1" />
+        </Grid>
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5">
             <oxy:Plot x:Name="Gsensor" Title="{Binding Title}" >
                 <oxy:Plot.Series>

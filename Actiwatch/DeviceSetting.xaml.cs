@@ -285,19 +285,31 @@ namespace Actiwatch
                         case "Battery":
                             if (data.Length == 10)
                             {
-                                double voltage = Convert.ToInt32(data[4] + "" + data[5] + "" + data[6] + "" + data[7] + "", 16) / 100;
-                                string batteryPercentage = String.Format("{0:0.00}%", (800 * voltage - 2260) / 11);
+                                double voltage = (double)Convert.ToInt32(data[4] + "" + data[5] + "" + data[6] + "" + data[7] + "", 16) / 100;
+                                PRINT(voltage + "");
+                                string batteryPercentage = "";
+                                if (voltage >= 4.2)
+                                {
+                                    batteryPercentage = String.Format("{0:0.00}%", 100);
+                                }else if(voltage <= 3.55)
+                                {
+                                    batteryPercentage = String.Format("{0:0.00}%", 0);
+                                }
+                                else
+                                {
+                                    batteryPercentage = String.Format("{0:0.00}%", (voltage - 3.55) / 0.65 * 100);
+                                }
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     batteryStatus.Text = batteryPercentage;
-                                    if((800 * voltage - 2260) / 11 >= 95)
+                                    if((voltage - 3.55) / 0.65 * 100 >= 95)
                                     {
                                         batteryImage.Kind = PackIconKind.Battery100;
                                     }
-                                    else if((800 * voltage - 2260) / 11 >= 80)
+                                    else if((voltage - 3.55) / 0.65 * 100 >= 80)
                                     {
                                         batteryImage.Kind = PackIconKind.Battery80;
-                                    }else if((800 * voltage - 2260) / 11 >= 60)
+                                    }else if((voltage - 3.55) / 0.65 * 100 >= 60)
                                     {
                                         batteryImage.Kind = PackIconKind.Battery60;
                                     }
@@ -488,7 +500,7 @@ namespace Actiwatch
             {
 
                 readThread.Suspend();
-                port.Dispose();
+                port.Close();
                 if (!port.IsOpen)
                 {
                     timer.Stop();

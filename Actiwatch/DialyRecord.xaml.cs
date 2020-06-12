@@ -264,5 +264,41 @@ namespace Actiwatch
         {
             Console.WriteLine(text);
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "所有檔案 (*.*)|*.*";
+            saveFileDialog.Title = "Save raw data";
+            saveFileDialog.DefaultExt = "txt";//設定預設格式（可以不設）
+            saveFileDialog.AddExtension = true;//設定自動在檔名中新增副檔名
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Console.WriteLine(saveFileDialog.FileName);
+                for (int i = 0; i < Global.Dialy_List.Count; i++)
+                {
+                    StreamWriter sw = new StreamWriter(saveFileDialog.FileName + "_" + Global.Dialy_List[i].datetime);
+                    sw.WriteLine("vm,temp,light");
+                    for (int j = 0; j < 86400; j++)
+                    {
+                        sw.WriteLine(String.Format("{0}, {1}, {2}", Global.Dialy_List[i].GetVM()[j], Global.Dialy_List[i].GetTemp()[j], Global.Dialy_List[i].GetLight()[j]));
+                    }
+                    sw.Close();
+                    sw = new StreamWriter(saveFileDialog.FileName + "_" + Global.Dialy_List[i].datetime + "_PA");
+                    sw.WriteLine("PA_cpm");
+                    for (int j = 0; j < 1440; j++)
+                    {
+                        sw.WriteLine(String.Format("{0}", Global.Dialy_List[i].GetPhysicalActivity()[j]));
+                    }
+                    sw.Close();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Cancel");
+            }
+        }
     }
 }
