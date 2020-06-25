@@ -63,7 +63,7 @@ namespace Actiwatch
                 case 0:
                     Day1.Visibility = Visibility.Visible;
                     Day1PA.Visibility = Visibility.Visible;
-                    Day1.DataContext = new Day1Model(Global.Dialy_List[(pageIndex - 1) * 7].GetVM());
+                    Day1.DataContext = new Day1Model(Global.Dialy_List[(pageIndex - 1) * 7].GetDatetime(), Global.Dialy_List[(pageIndex - 1) * 7].GetVM(), "activity");
                     day1Axes.FontSize = 8;
                     Day1Date.Text = Global.Dialy_List[(pageIndex - 1) * 7].GetDatetime();
 
@@ -86,7 +86,7 @@ namespace Actiwatch
                 case 1:
                     Day2.Visibility = Visibility.Visible;
                     Day2PA.Visibility = Visibility.Visible;
-                    Day2.DataContext = new Day2Model(Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetVM());
+                    Day2.DataContext = new Day2Model(Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetDatetime(), Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetVM(), "activity");
                     day2Axes.FontSize = 8;
                     Day2Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetDatetime();
                     double[] pa2 = Global.Dialy_List[(pageIndex - 1) * 7 + 1].GetPhysicalActivity();
@@ -108,7 +108,7 @@ namespace Actiwatch
                 case 2:
                     Day3.Visibility = Visibility.Visible;
                     Day3PA.Visibility = Visibility.Visible;
-                    Day3.DataContext = new Day3Model(Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetVM());
+                    Day3.DataContext = new Day3Model(Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetDatetime(), Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetVM(), "activity");
                     day3Axes.FontSize = 8;
                     Day3Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetDatetime();
                     double[] pa3 = Global.Dialy_List[(pageIndex - 1) * 7 + 2].GetPhysicalActivity();
@@ -130,7 +130,7 @@ namespace Actiwatch
                 case 3:
                     Day4.Visibility = Visibility.Visible;
                     Day4PA.Visibility = Visibility.Visible;
-                    Day4.DataContext = new Day4Model(Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetVM());
+                    Day4.DataContext = new Day4Model(Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetDatetime(), Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetVM(), "activity");
                     day4Axes.FontSize = 8;
                     Day4Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetDatetime();
                     double[] pa4 = Global.Dialy_List[(pageIndex - 1) * 7 + 3].GetPhysicalActivity();
@@ -152,7 +152,7 @@ namespace Actiwatch
                 case 4:
                     Day5.Visibility = Visibility.Visible;
                     Day5PA.Visibility = Visibility.Visible;
-                    Day5.DataContext = new Day5Model(Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetVM());
+                    Day5.DataContext = new Day5Model(Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetDatetime(), Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetVM(), "activity");
                     day5Axes.FontSize = 8;
                     Day5Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetDatetime();
                     double[] pa5 = Global.Dialy_List[(pageIndex - 1) * 7 + 4].GetPhysicalActivity();
@@ -174,7 +174,7 @@ namespace Actiwatch
                 case 5:
                     Day6.Visibility = Visibility.Visible;
                     Day6PA.Visibility = Visibility.Visible;
-                    Day6.DataContext = new Day6Model(Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetVM());
+                    Day6.DataContext = new Day6Model(Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetDatetime(), Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetVM(), "activity");
                     day6Axes.FontSize = 8;
                     Day6Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetDatetime();
                     double[] pa6 = Global.Dialy_List[(pageIndex - 1) * 7 + 5].GetPhysicalActivity();
@@ -196,7 +196,7 @@ namespace Actiwatch
                 case 6:
                     Day7.Visibility = Visibility.Visible;
                     Day7PA.Visibility = Visibility.Visible;
-                    Day7.DataContext = new Day7Model(Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetVM());
+                    Day7.DataContext = new Day7Model(Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetDatetime(), Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetVM(), "activity");
                     day7Axes.FontSize = 8;
                     Day7Date.Text = Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetDatetime();
                     double[] pa7 = Global.Dialy_List[(pageIndex - 1) * 7 + 6].GetPhysicalActivity();

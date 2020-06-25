@@ -21,6 +21,7 @@ namespace Actiwatch
         public int[] light = new int[86400];
         public double[] vm = new double[86400];
         public double[] vmDiff = new double[86399];
+        public double[] sleepVm = new double[86400];
         public int[] x = new int[86400];
         public int[] y = new int[86400];
         public int[] z = new int[86400];
@@ -87,6 +88,14 @@ namespace Actiwatch
         public int[] GetZ()
         {
             return this.z;
+        }
+        public void SetSleepTime(double[] sleepVm)
+        {
+            this.sleepVm = (double[])sleepVm.Clone();
+        }
+        public double[] GetSleepTime()
+        {
+            return this.sleepVm;
         }
 
         public double[] GetPhysicalActivity()
@@ -229,6 +238,13 @@ namespace Actiwatch
                             {
                                 DialyCombo.SelectedIndex = 0;
                             }
+                        }
+                        double[] newArray = new double[86400];
+                        for (int i=0;i< Global.Dialy_List.Count - 1; i++)
+                        {
+                            for(int j=0;j<43200;j++) newArray[j] = Global.Dialy_List[i].GetVM()[j+43200];
+                            for(int j=0;j<43200;j++) newArray[j+43200] = Global.Dialy_List[i+1].GetVM()[j];
+                            Global.Dialy_List[i].SetSleepTime(newArray);
                         }
 
                         Application.Current.Dispatcher.Invoke(() =>

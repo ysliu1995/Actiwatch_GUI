@@ -14,7 +14,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -28,8 +28,9 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid Grid.Column="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -40,37 +41,30 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" FontSize="15" >  Date and time in bed</TextBlock>
-                </StackPanel>
-                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" FontSize="15" >  Date and time out of  bed</TextBlock>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-                    <DatePicker
-                      x:Name="startDate"
-                      materialDesign:HintAssist.Hint="Pick Date"
-                      Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
-                </StackPanel>
-                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
-                    <DatePicker
-                      x:Name="endDate"
-                      materialDesign:HintAssist.Hint="Pick Date"
-                      Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
-                </StackPanel>
-                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
-                    <materialDesign:TimePicker
-                      Is24Hours="True"
-                      x:Name="startTime"
-                      Width="100" />
-                </StackPanel>
-                <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
-                    <materialDesign:TimePicker
-                      Is24Hours="True"
-                      x:Name="endTime"
-                      Width="100" />
-                </StackPanel>
-                <StackPanel Grid.Column="3" Grid.RowSpan="2" Orientation="Horizontal">
+                <Grid Grid.Column="0" Grid.RowSpan="2">
+                    <ComboBox x:Name="chooseDate"  materialDesign:HintAssist.Hint="" Margin="5" HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Column="1" Grid.Row="0" Margin="5">
+                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" >  Date and time in bed</TextBlock>
+                </Grid>
+                <Grid Grid.Column="1" Grid.Row="1" Margin="5">
+                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" >  Date and time out of  bed</TextBlock>
+                </Grid>
+                <Grid Grid.Column="2"  Grid.Row="0">
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox x:Name="timeInBed"  materialDesign:HintAssist.Hint="" Margin="5"/>
+                        <ComboBox x:Name="startHour"  materialDesign:HintAssist.Hint="" Margin="5"/>
+                        <ComboBox x:Name="startMinute"  materialDesign:HintAssist.Hint="" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Column="2"  Grid.Row="1">
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox x:Name="timeOutOfBed"  materialDesign:HintAssist.Hint="" Margin="5"/>
+                        <ComboBox x:Name="endHour"  materialDesign:HintAssist.Hint="" Margin="5"/>
+                        <ComboBox x:Name="endMinute"  materialDesign:HintAssist.Hint="" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Column="3" Grid.RowSpan="2" >
                     <Button
                         Style="{StaticResource MaterialDesignRaisedLightButton}"
                         ToolTip="Resource name: MaterialDesignRaisedLightButton"
@@ -78,9 +72,9 @@
                         FontSize="12">
                         Store these times and refresh
                     </Button>
-                </StackPanel>
+                </Grid>
             </Grid>
-            <Grid Grid.Column="2">
+            <Grid Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -107,11 +101,10 @@
         <Grid Grid.Row="1" Grid.Column="1">
             <oxy:Plot  x:Name="Day1" Title="{Binding Day1title}" >
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding Day1Points}"/>
+                    <oxy:LineSeries ItemsSource="{Binding Day1Points}" Color="DarkSlateGray"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Name="day1Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:DateTimeAxis Name="day1Axes" Position="Bottom" StringFormat="HH:ss"/>
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
@@ -125,11 +118,10 @@
         <Grid Grid.Row="2" Grid.Column="1">
             <oxy:Plot x:Name="Day2" Title="{Binding Day2title}" >
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding Day2Points}"/>
+                    <oxy:LineSeries ItemsSource="{Binding Day2Points}" Color="DarkSlateGray"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Name="day2Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:DateTimeAxis Name="day2Axes" Position="Bottom" StringFormat="HH:ss"/>
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
@@ -143,11 +135,10 @@
         <Grid Grid.Row="3" Grid.Column="1">
             <oxy:Plot x:Name="Day3" Title="{Binding Day3title}" >
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding Day3Points}"/>
+                    <oxy:LineSeries ItemsSource="{Binding Day3Points}" Color="DarkSlateGray"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Name="day3Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:DateTimeAxis Name="day3Axes" Position="Bottom" StringFormat="HH:ss"/>
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
@@ -161,11 +152,10 @@
         <Grid Grid.Row="4" Grid.Column="1">
             <oxy:Plot x:Name="Day4" Title="{Binding Day4title}" >
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding Day4Points}"/>
+                    <oxy:LineSeries ItemsSource="{Binding Day4Points}" Color="DarkSlateGray"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Name="day4Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:DateTimeAxis Name="day4Axes" Position="Bottom" StringFormat="HH:ss"/>
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
@@ -178,11 +168,10 @@
         <Grid Grid.Row="5" Grid.Column="1">
             <oxy:Plot x:Name="Day5" Title="{Binding Day5title}" >
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding Day5Points}"/>
+                    <oxy:LineSeries ItemsSource="{Binding Day5Points}" Color="DarkSlateGray"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Name="day5Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:DateTimeAxis Name="day5Axes" Position="Bottom" StringFormat="HH:ss"/>
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
@@ -195,11 +184,10 @@
         <Grid Grid.Row="6" Grid.Column="1">
             <oxy:Plot x:Name="Day6" Title="{Binding Day6title}" >
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding Day6Points}"/>
+                    <oxy:LineSeries ItemsSource="{Binding Day6Points}" Color="DarkSlateGray"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Name="day6Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:DateTimeAxis Name="day6Axes" Position="Bottom" StringFormat="HH:ss"/>
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
@@ -212,11 +200,10 @@
         <Grid Grid.Row="7" Grid.Column="1">
             <oxy:Plot x:Name="Day7" Title="{Binding Day7title}" >
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding Day7Points}"/>
+                    <oxy:LineSeries ItemsSource="{Binding Day7Points}" Color="DarkSlateGray"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Name="day7Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                    <oxy:DateTimeAxis Name="day7Axes" Position="Bottom" StringFormat="HH:ss"/>
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>

@@ -55,7 +55,7 @@
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
                     <oxy:LinearAxis Name="day1Axes" Position="Bottom"
-                                Minimum="0" Maximum="24" IntervalLength="25" />
+                                Minimum="0" Maximum="24" IntervalLength="12" />
                     <oxy:LinearAxis Position="Left" IsAxisVisible="False" Minimum="500" Maximum="1500"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
