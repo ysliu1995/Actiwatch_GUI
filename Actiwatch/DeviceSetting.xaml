@@ -146,30 +146,29 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-                <Grid Grid.Row="0">
-
-                </Grid>
-                <oxy:Plot x:Name="downloadData" Visibility="Hidden" Margin="20">
-                    <oxy:Plot.Series>
-                        <oxy:LineSeries ItemsSource="{Binding xPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
-                        <oxy:LineSeries ItemsSource="{Binding yPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
-                        <oxy:LineSeries ItemsSource="{Binding zPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
-                    </oxy:Plot.Series>
-                    <oxy:Plot.Axes>
-                        <oxy:LinearAxis Position="Bottom" Title="points"/>
-                        <oxy:LinearAxis Position="Left" Title="mg"/>
-                    </oxy:Plot.Axes>
-                </oxy:Plot>
-                <StackPanel x:Name="downloadProgressPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden">
-                    <TextBlock x:Name="progressPercentage" HorizontalAlignment="Center">
+                <Grid Grid.Row="1">
+                    <oxy:Plot x:Name="downloadData" Visibility="Hidden" Margin="20">
+                        <oxy:Plot.Series>
+                            <oxy:LineSeries ItemsSource="{Binding xPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
+                            <oxy:LineSeries ItemsSource="{Binding yPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
+                            <oxy:LineSeries ItemsSource="{Binding zPoints}" LineStyle="Automatic" Color="DarkSlateGray"/>
+                        </oxy:Plot.Series>
+                        <oxy:Plot.Axes>
+                            <oxy:LinearAxis Position="Bottom" Title="points"/>
+                            <oxy:LinearAxis Position="Left" Title="mg"/>
+                        </oxy:Plot.Axes>
+                    </oxy:Plot>
+                    <StackPanel x:Name="downloadProgressPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden">
+                        <TextBlock x:Name="progressPercentage" HorizontalAlignment="Center">
                         Downloading...(0.00 %)
-                    </TextBlock>
-                    <ProgressBar
+                        </TextBlock>
+                        <ProgressBar
                         x:Name="downloadProgress"
                         Value="0"
                         Height="10"
                         materialDesign:TransitionAssist.DisableTransitions="True"  HorizontalAlignment="Center" Width="368"  />
-                </StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Grid>
         

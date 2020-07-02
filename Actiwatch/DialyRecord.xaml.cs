@@ -22,11 +22,17 @@ namespace Actiwatch
         public double[] vm = new double[86400];
         public double[] vmDiff = new double[86399];
         public double[] sleepVm = new double[86400];
+        public double[] sleepZ = new double[86400];
         public int[] x = new int[86400];
         public int[] y = new int[86400];
         public int[] z = new int[86400];
-        public double startRange;
-        public double endRange;
+        public int startRange;
+        public int endRange;
+        public Boolean haveSleep;
+        public double SE;
+        public double SOT;
+        public double WASO;
+        public double TST;
 
         public DialyData(string datetime, float[] temp, int[] light, double[] vm, double[] vmDiff, int[] x, int[] y, int[] z)
         {
@@ -40,12 +46,13 @@ namespace Actiwatch
             this.z = (int[])z.Clone();
             this.startRange = 0;
             this.endRange = 0;
+            this.haveSleep = false;
         }
-        public void SetStartRange(double startRange)
+        public void SetStartRange(int startRange)
         {
             this.startRange = startRange;
         }
-        public void SetEndRange(double endRange)
+        public void SetEndRange(int endRange)
         {
             this.endRange = endRange;
         }
@@ -89,14 +96,20 @@ namespace Actiwatch
         {
             return this.z;
         }
-        public void SetSleepTime(double[] sleepVm)
+        public void SetSleepTime(double[] sleepVm, double[] sleepZ)
         {
             this.sleepVm = (double[])sleepVm.Clone();
+            this.sleepZ = (double[])sleepZ.Clone();
         }
         public double[] GetSleepTime()
         {
             return this.sleepVm;
         }
+        public double[] GetSleepZ()
+        {
+            return this.sleepZ;
+        }
+
 
         public double[] GetPhysicalActivity()
         {
@@ -240,11 +253,18 @@ namespace Actiwatch
                             }
                         }
                         double[] newArray = new double[86400];
+                        double[] newZArray = new double[86400];
                         for (int i=0;i< Global.Dialy_List.Count - 1; i++)
                         {
-                            for(int j=0;j<43200;j++) newArray[j] = Global.Dialy_List[i].GetVM()[j+43200];
-                            for(int j=0;j<43200;j++) newArray[j+43200] = Global.Dialy_List[i+1].GetVM()[j];
-                            Global.Dialy_List[i].SetSleepTime(newArray);
+                            for (int j = 0; j < 43200; j++) {
+                                newArray[j] = Global.Dialy_List[i].GetVM()[j + 43200];
+                                newZArray[j] = Global.Dialy_List[i].GetZ()[j + 43200];
+                            }
+                            for (int j = 0; j < 43200; j++) {
+                                newArray[j + 43200] = Global.Dialy_List[i + 1].GetVM()[j];
+                                newZArray[j + 43200] = Global.Dialy_List[i + 1].GetZ()[j];
+                            } 
+                            Global.Dialy_List[i].SetSleepTime(newArray, newZArray);
                         }
 
                         Application.Current.Dispatcher.Invoke(() =>

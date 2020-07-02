@@ -50,6 +50,10 @@ namespace Actiwatch
                     usc = new Sleep();
                     GridMain.Children.Add(usc);
                     break;
+                case "Report":
+                    usc = new SleepReport();
+                    GridMain.Children.Add(usc);
+                    break;
                 default:
                     break;
             }

@@ -55,16 +55,22 @@
                         <TextBlock Text="Dialy Recording" VerticalAlignment="Center" Margin="20 10"/>
                     </StackPanel>
                 </ListViewItem>
-                <ListViewItem x:Name="PhysicalActivity" Height="60" >
+                <!--<ListViewItem x:Name="PhysicalActivity" Height="60" >
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Run" Height="25" Width="25" Margin="10"/>
                         <TextBlock Text="Physical Activity" VerticalAlignment="Center" Margin="20 10"/>
                     </StackPanel>
-                </ListViewItem>
+                </ListViewItem>-->
                 <ListViewItem x:Name="Sleep" Height="60" >
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="AirlineSeatIndividualSuite" Height="25" Width="25" Margin="10"/>
                         <TextBlock Text="Sleep" VerticalAlignment="Center"  Margin="20 10"/>
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem x:Name="Report" Height="60" >
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ChartBar" Height="25" Width="25" Margin="10"/>
+                        <TextBlock Text="sleep report" VerticalAlignment="Center"  Margin="20 10"/>
                     </StackPanel>
                 </ListViewItem>
             </ListView>

@@ -96,6 +96,10 @@
     <Compile Include="Sleep.xaml.cs">
       <DependentUpon>Sleep.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SleepAlgorithm.cs" />
+    <Compile Include="SleepReport.xaml.cs">
+      <DependentUpon>SleepReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TempViewModel.cs" />
     <Page Include="DeviceSetting.xaml">
       <SubType>Designer</SubType>
@@ -125,6 +129,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Sleep.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SleepReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

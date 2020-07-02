@@ -82,18 +82,7 @@ namespace Actiwatch
             startMinute.SelectedIndex = 0;
             endMinute.SelectedIndex = 0;
             chooseDate.SelectedIndex = 0;
-
-            //DateTime taskDate = DateTime.ParseExact(Global.Dialy_List[(pageIndex - 1) * 7].GetDatetime(), "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            //long time = ((DateTimeOffset)taskDate).ToUnixTimeSeconds();
-            //DateTime dt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(time);
-            //time += 1000;
-            //dt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(time);
-            //Application.Current.Dispatcher.Invoke(() =>
-            //{
-            //    chartList[0].Annotations.Clear();
-            //    chartList[0].Annotations.Add(new RectangleAnnotation() { MinimumX = OxyPlot.Axes.DateTimeAxis.ToDouble(startDate), MaximumX = OxyPlot.Axes.DateTimeAxis.ToDouble(dt), MinimumY = 0, MaximumY = 2000, Fill = Color.FromArgb(120, 0, 0, 255) });
-            //    chartList[0].InvalidatePlot(true);
-            //});
+            
         }
         private void showData(int idx)
         {
@@ -298,6 +287,30 @@ namespace Actiwatch
                 chartList[chooseIndex].InvalidatePlot(true);
             });
 
+            int startTime = 0;
+            int endTime = 0;
+            if (Convert.ToInt32(startHour.Text) >= 12)
+            {
+                startTime = (Convert.ToInt32(startHour.Text) - 12) * 3600 + Convert.ToInt32(startMinute.Text) * 60;
+            }
+            else
+            {
+                startTime = (Convert.ToInt32(startHour.Text) + 12) * 3600 + Convert.ToInt32(startMinute.Text) * 60;
+            }
+
+            if (Convert.ToInt32(endHour.Text) >= 12)
+            {
+                endTime = (Convert.ToInt32(endHour.Text) - 12) * 3600 + Convert.ToInt32(endMinute.Text) * 60;
+            }
+            else
+            {
+                endTime = (Convert.ToInt32(endHour.Text) + 12) * 3600 + Convert.ToInt32(endMinute.Text) * 60;
+            }
+            //Console.WriteLine(startTime);
+            //Console.WriteLine(endTime);
+            Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].startRange = startTime;
+            Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].endRange = endTime;
+            Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].haveSleep = true;
         }
     }
 }
