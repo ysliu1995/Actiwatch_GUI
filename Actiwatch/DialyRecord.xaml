@@ -33,6 +33,7 @@
         </Grid>
         <Grid Grid.Row="0" Grid.Column="2">
             <Button
+                Visibility="Hidden"
             Style="{StaticResource MaterialDesignRaisedDarkButton}"
             HorizontalAlignment="center"
             Width="200"

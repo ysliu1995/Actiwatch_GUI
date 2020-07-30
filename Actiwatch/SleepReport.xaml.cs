@@ -1,7 +1,9 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -28,6 +30,20 @@ namespace Actiwatch
         public string[] TSTLabels { get; set; }
         public Func<double, string> TSTFormatter { get; set; }
 
+        public SeriesCollection rawSeriesCollection { get; set; }
+        public string[] rawLabels { get; set; }
+        public Func<double, string> rawFormatter { get; set; }
+
+        public SeriesCollection stageSeriesCollection { get; set; }
+        public string[] stageLabels { get; set; }
+        public Func<double, string> stageFormatter { get; set; }
+
+        private ChartValues<double> SE = new ChartValues<double>();
+        private ChartValues<double> SOT = new ChartValues<double>();
+        private ChartValues<double> WASO = new ChartValues<double>();
+        private ChartValues<double> TST = new ChartValues<double>();
+        private List<string> date = new List<string>();
+
         public SleepReport()
         {
             InitializeComponent();
@@ -37,7 +53,7 @@ namespace Actiwatch
                 new ColumnSeries
                 {
                     Title = "Sleep efficiency",
-                    Values = new ChartValues<double> {  },
+                    Values = new ChartValues<double> { },
                     Fill = new SolidColorBrush(Color.FromRgb(0x00, 0x96, 0x88))
                 }
             };
@@ -74,17 +90,14 @@ namespace Actiwatch
                     Fill = new SolidColorBrush(Color.FromRgb(0x00, 0x96, 0x88))
                 }
             };
-            
+
 
             DataContext = this;
 
             SleepAlgorithm algo = new SleepAlgorithm();
             SleepIndex SI;
-            List<string> date = new List<string>();
-            ChartValues<double> SE = new ChartValues<double>();
-            ChartValues<double> SOT = new ChartValues<double>();
-            ChartValues<double> WASO = new ChartValues<double>();
-            ChartValues<double> TST = new ChartValues<double>();
+            
+            
             for (int i = 0; i < Global.Dialy_List.Count; i++)
             {
                 if (Global.Dialy_List[i].haveSleep)
@@ -107,7 +120,10 @@ namespace Actiwatch
                     date.Add(Global.Dialy_List[i].GetDatetime());
 
                     SE.Add(SI.SE);
-                    SOT.Add(SI.SOT);
+                    if(SI.SOT < 5)
+                        SOT.Add(5);
+                    else
+                        SOT.Add(SI.SOT);
                     WASO.Add(SI.WASO);
                     TST.Add(SI.TST);
                 }
@@ -125,6 +141,34 @@ namespace Actiwatch
             SOTSeriesCollection[0].Values = SOT;
             WASOSeriesCollection[0].Values = WASO;
             TSTSeriesCollection[0].Values = TST;
+            
+            WriteToCSV();
         }
+        void WriteToCSV()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "所有檔案 (*.*)|*.*";
+            saveFileDialog.Title = "Save raw data";
+            saveFileDialog.DefaultExt = "csv";//設定預設格式（可以不設）
+            saveFileDialog.AddExtension = true;//設定自動在檔名中新增副檔名
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                Console.WriteLine(saveFileDialog.FileName);
+                StreamWriter sw = new StreamWriter(saveFileDialog.FileName);
+                sw.WriteLine("Date, SE (%), SOT (min), WASO (min), TST (min)");
+                for (int i = 0; i < SE.Count; i++)
+                {
+                    sw.WriteLine(String.Format("{0}, {1}, {2}, {3}, {4}", date[i], SE[i].ToString(), SOT[i].ToString(), WASO[i].ToString(), TST[i].ToString()));            // 寫入文字
+                }
+                sw.Close();                     // 關閉串流
+            }
+            else
+            {
+                Console.WriteLine("Cancel");
+            }
+        }
+
     }
 }

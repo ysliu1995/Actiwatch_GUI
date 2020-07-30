@@ -26,7 +26,7 @@
                     Height="40"
                     Style="{StaticResource MaterialDesignRaisedDarkButton}"
                     ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"  Click="Button_Click_2">
-                    Comport Serach
+                    Comport Search
                 </Button>
             </Grid>
             <Grid Grid.Column="1">

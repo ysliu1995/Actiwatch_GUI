@@ -42,7 +42,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Column="0" Grid.RowSpan="2">
-                    <ComboBox x:Name="chooseDate"  materialDesign:HintAssist.Hint="" Margin="5" HorizontalAlignment="Center"/>
+                    <ComboBox x:Name="chooseDate"  materialDesign:HintAssist.Hint="" Margin="5" HorizontalAlignment="Center" SelectionChanged="ChooseDate_SelectionChanged"/>
                 </Grid>
                 <Grid Grid.Column="1" Grid.Row="0" Margin="5">
                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" >  Date and time in bed</TextBlock>

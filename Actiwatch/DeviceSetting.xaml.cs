@@ -118,7 +118,7 @@ namespace Actiwatch
         {
             Console.WriteLine("Get battery");
             state = "Battery";
-            byte[] bytestosend = { 0x55, 0x06, 0x00, 0xAA };
+            byte[] bytestosend = { 0x55, 0x07, 0x00, 0xAA };
             port.Write(bytestosend, 0, 4);
         }
 
@@ -400,9 +400,9 @@ namespace Actiwatch
                 + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 2)], 16), 2).PadLeft(8, '0');
                 string OneSecondDataZ = Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 5)], 16), 2).PadLeft(8, '0')
                 + Convert.ToString(Convert.ToInt32(SensorData[8 + (j * 6 + 4)], 16), 2).PadLeft(8, '0');
-                int x = Convert.ToInt32(OneSecondDataX, 2) > 2047 ? 65536 - Convert.ToInt32(OneSecondDataX, 2) : Convert.ToInt32(OneSecondDataX, 2);
-                int y = Convert.ToInt32(OneSecondDataY, 2) > 2047 ? 65536 - Convert.ToInt32(OneSecondDataY, 2) : Convert.ToInt32(OneSecondDataY, 2);
-                int z = Convert.ToInt32(OneSecondDataZ, 2) > 2047 ? 65536 - Convert.ToInt32(OneSecondDataZ, 2) : Convert.ToInt32(OneSecondDataZ, 2);
+                int x = Convert.ToInt32(OneSecondDataX, 2) > 2047 ? (65536 - Convert.ToInt32(OneSecondDataX, 2)) * -1 : Convert.ToInt32(OneSecondDataX, 2);
+                int y = Convert.ToInt32(OneSecondDataY, 2) > 2047 ? (65536 - Convert.ToInt32(OneSecondDataY, 2)) * -1 : Convert.ToInt32(OneSecondDataY, 2);
+                int z = Convert.ToInt32(OneSecondDataZ, 2) > 2047 ? (65536 - Convert.ToInt32(OneSecondDataZ, 2)) * -1 : Convert.ToInt32(OneSecondDataZ, 2);
                 x *= 4;
                 y *= 4;
                 z *= 4;

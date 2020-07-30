@@ -27,7 +27,7 @@ namespace Actiwatch
         private List<string> dateList;
 
         private string[] hour = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"};
-        private string[] minute = { "00", "10", "20", "30", "40", "50"};
+        private string[] minute = { "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55" };
 
         public Sleep()
         {
@@ -41,16 +41,19 @@ namespace Actiwatch
                 startHour.Items.Add(hour[i]);
                 endHour.Items.Add(hour[i]);
             }
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 12; i++)
             {
                 startMinute.Items.Add(minute[i]);
                 endMinute.Items.Add(minute[i]);
             }
-            for (int i = 0; i < Global.Dialy_List.Count; i++)
+            for(int i=0;i< Global.Dialy_List.Count; i++)
             {
                 chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
                 timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                 timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+            }
+            for (int i = 0; i < Global.Dialy_List.Count; i++)
+            {
                 showData(i);
                 if (i == 6) break;
             }
@@ -175,18 +178,18 @@ namespace Actiwatch
         {
             if (pageIndex > 1)
             {
-                chooseDate.Items.Clear();
-                timeInBed.Items.Clear();
-                timeOutOfBed.Items.Clear();
+                //chooseDate.Items.Clear();
+                //timeInBed.Items.Clear();
+                //timeOutOfBed.Items.Clear();
                 pageIndex--;
                 if (Global.Dialy_List.Count < (pageIndex * 7))
                 {
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, Global.Dialy_List.Count, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < Global.Dialy_List.Count; i++)
                     {
-                        chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                     for (int i = Global.Dialy_List.Count; i < (pageIndex * 7); i++)
@@ -199,9 +202,9 @@ namespace Actiwatch
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, pageIndex * 7, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < pageIndex * 7; i++)
                     {
-                        chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                 }
@@ -218,18 +221,18 @@ namespace Actiwatch
         {
             if (pageIndex < ((float)Global.Dialy_List.Count / 7))
             {
-                chooseDate.Items.Clear();
-                timeInBed.Items.Clear();
-                timeOutOfBed.Items.Clear();
+                //chooseDate.Items.Clear();
+                //timeInBed.Items.Clear();
+                //timeOutOfBed.Items.Clear();
                 pageIndex++;
                 if (Global.Dialy_List.Count < (pageIndex * 7))
                 {
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, Global.Dialy_List.Count, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < Global.Dialy_List.Count; i++)
                     {
-                        chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                     for (int i = Global.Dialy_List.Count; i < (pageIndex * 7); i++)
@@ -243,9 +246,9 @@ namespace Actiwatch
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, pageIndex * 7, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < pageIndex * 7; i++)
                     {
-                        chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
+                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                 }
@@ -268,6 +271,7 @@ namespace Actiwatch
             string startSleepTime = String.Format("{0} {1}:{2}:00", timeInBed.Text, startHour.Text, startMinute.Text);
             string endSleepTime = String.Format("{0} {1}:{2}:00", timeOutOfBed.Text, endHour.Text, endMinute.Text);
             int chooseIndex = chooseDate.SelectedIndex;
+            chooseIndex = chooseIndex % 7;
 
             Console.WriteLine(chooseIndex);
             Console.WriteLine(startSleepTime);
@@ -311,6 +315,13 @@ namespace Actiwatch
             Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].startRange = startTime;
             Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].endRange = endTime;
             Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].haveSleep = true;
+        }
+        
+
+        private void ChooseDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            timeInBed.SelectedIndex = chooseDate.SelectedIndex;
+            timeOutOfBed.SelectedIndex = chooseDate.SelectedIndex;
         }
     }
 }
