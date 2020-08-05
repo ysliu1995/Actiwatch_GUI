@@ -27,6 +27,7 @@ namespace Actiwatch
             UserControl usc = new DeviceSetting();
             GridMain.Children.Add(usc);
         }
+        //更換List的列表
         private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UserControl usc = null;
@@ -58,14 +59,11 @@ namespace Actiwatch
                     break;
             }
         }
+        //關掉程式觸發函式
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            DeviceSetting ds = new DeviceSetting();
-            if(ds.timer != null)
-            {
-                ds.timer.Stop();
-            }
+            System.Environment.Exit(0);
+            Console.WriteLine("Close");
         }
-
     }
 }

@@ -63,15 +63,6 @@
             <Grid  Grid.Column="1">
                 <StackPanel Orientation="Vertical">
                     <Button
-                        x:Name="stopButton"
-                        Margin="15"
-                        Height="30"
-                        IsEnabled="False"
-                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                        ToolTip="Resource name: MaterialDesignRaisedLightDarkButton" Click="StopButton_Click"  >
-                        Stop recording
-                    </Button>
-                    <Button
                         x:Name="downloadButton"
                         Margin="15"
                         Height="30"
@@ -127,7 +118,7 @@
                                 FontSize="20"
                                 VerticalAlignment="Center"
                                 Style="{StaticResource MaterialDesignButtonTextBlock}">
-                              Device status : 
+                              Device status :
                             </TextBlock>
                             <TextBlock
                                 x:Name="deviceStatus"
@@ -171,7 +162,5 @@
                 </Grid>
             </Grid>
         </Grid>
-        
-
     </Grid>
 </UserControl>

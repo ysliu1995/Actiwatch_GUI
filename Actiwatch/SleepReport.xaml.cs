@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -43,11 +44,23 @@ namespace Actiwatch
         private ChartValues<double> WASO = new ChartValues<double>();
         private ChartValues<double> TST = new ChartValues<double>();
         private List<string> date = new List<string>();
+        private List<string> sleepDate = new List<string>();
+        private List<string> sleepDateList = new List<string>();
+        private List<List<double>> sleepRaw = new List<List<double>>();
+        private List<List<int>> sleepStage = new List<List<int>>();
 
         public SleepReport()
         {
             InitializeComponent();
 
+            initChart();
+            DataContext = this;
+            Analysis();
+            
+        }
+        //初始化圖表
+        private void initChart()
+        {
             SESeriesCollection = new SeriesCollection()
             {
                 new ColumnSeries
@@ -57,7 +70,7 @@ namespace Actiwatch
                     Fill = new SolidColorBrush(Color.FromRgb(0x00, 0x96, 0x88))
                 }
             };
-            
+
 
             SOTSeriesCollection = new SeriesCollection
             {
@@ -68,7 +81,7 @@ namespace Actiwatch
                     Fill = new SolidColorBrush(Color.FromRgb(0x00, 0x96, 0x88))
                 }
             };
-            
+
 
             WASOSeriesCollection = new SeriesCollection
             {
@@ -79,7 +92,7 @@ namespace Actiwatch
                     Fill = new SolidColorBrush(Color.FromRgb(0x00, 0x96, 0x88))
                 }
             };
-            
+
 
             TSTSeriesCollection = new SeriesCollection
             {
@@ -90,14 +103,14 @@ namespace Actiwatch
                     Fill = new SolidColorBrush(Color.FromRgb(0x00, 0x96, 0x88))
                 }
             };
-
-
-            DataContext = this;
-
+        }
+        //跑演算法
+        private void Analysis()
+        {
             SleepAlgorithm algo = new SleepAlgorithm();
             SleepIndex SI;
-            
-            
+
+
             for (int i = 0; i < Global.Dialy_List.Count; i++)
             {
                 if (Global.Dialy_List[i].haveSleep)
@@ -120,12 +133,17 @@ namespace Actiwatch
                     date.Add(Global.Dialy_List[i].GetDatetime());
 
                     SE.Add(SI.SE);
-                    if(SI.SOT < 5)
+                    if (SI.SOT < 5)
                         SOT.Add(5);
                     else
                         SOT.Add(SI.SOT);
                     WASO.Add(SI.WASO);
                     TST.Add(SI.TST);
+
+                    sleepDateList.Add(Global.Dialy_List[i].GetDatetime());
+                    sleepDate.Add(Global.Dialy_List[i].startTime);
+                    sleepRaw.Add(sleepZ);
+                    sleepStage.Add(stage.ToList());
                 }
             }
             SELabels = date.ToArray();
@@ -142,9 +160,28 @@ namespace Actiwatch
             WASOSeriesCollection[0].Values = WASO;
             TSTSeriesCollection[0].Values = TST;
             
-            WriteToCSV();
+            if(sleepDate.Count > 0)
+            {
+                //重新加入日期列表
+                StageCombo.Items.Clear();
+                foreach (string date in sleepDateList)
+                {
+                    StageCombo.Items.Add(date);
+                }
+                if (StageCombo.Items.Count > 0)
+                {
+                    StageCombo.SelectedIndex = 0;
+                }
+                stage.DataContext = new StageModel(sleepDate[0], sleepStage[0].ToArray());
+                //初始化Y軸
+                stageLabelAxes.Labels.Clear();
+                stageLabelAxes.Labels.Add("Sleep");
+                stageLabelAxes.Labels.Add("Wake");
+            }
+            
         }
-        void WriteToCSV()
+        //將分析的睡眠結果寫入csv檔
+        private void WriteToCSV()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "所有檔案 (*.*)|*.*";
@@ -169,6 +206,19 @@ namespace Actiwatch
                 Console.WriteLine("Cancel");
             }
         }
-
+        //改變日期觸發函式
+        private void StageCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int index = StageCombo.SelectedIndex;
+            if (index >= 0)
+            {
+                stage.DataContext = new StageModel(sleepDate[index], sleepStage[index].ToArray());
+            }
+        }
+        //下載按鈕觸發
+        private void reportDownload(object sender, System.Windows.RoutedEventArgs e)
+        {
+            WriteToCSV();
+        }
     }
 }

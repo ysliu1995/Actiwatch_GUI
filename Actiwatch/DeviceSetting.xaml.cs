@@ -29,7 +29,7 @@ namespace Actiwatch
     /// </summary>
     public partial class DeviceSetting : UserControl
     {
-        private SerialPort port;
+        
         private string state;
         private int total_page_number;
         private int index;
@@ -43,9 +43,11 @@ namespace Actiwatch
         private List<double> total_z = new List<double>();
         private List<double> total_cpm1 = new List<double>();
         private List<double> total_cpm2 = new List<double>();
-        private Thread readThread;
+        
 
         public DispatcherTimer timer;
+        public SerialPort port;
+        public Thread readThread;
 
         public DeviceSetting()
         {
@@ -55,78 +57,11 @@ namespace Actiwatch
             debugText.Text += "";
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            OpenComport();
-
-        }
-
-        private void OpenComport()
-        {
-            port = new SerialPort((String)ComportCombo.SelectedItem, 115200, Parity.None, 8, StopBits.One);
-            port.ReadTimeout = 500;
-            port.WriteTimeout = 500;
-            try
-            {
-                if (port.IsOpen)
-                {
-                    port.Close();
-                }
-                if ((port != null) && (!port.IsOpen))
-                {
-                    port.Open();
-                    if (port.IsOpen)
-                    {
-                        state = "idle";
-                        readThread = new Thread(receive);
-                        readThread.Start();
-                        Console.WriteLine("Comport opened");
-
-                        deviceStatus.Text = "Connected";
-                        searchButton.IsEnabled = false;
-                        connectButton.IsEnabled = false;
-                        disconnectButton.IsEnabled = true;
-                        stopButton.IsEnabled = true;
-                        downloadButton.IsEnabled = true;
-                        clearButton.IsEnabled = true;
-                        recordingButton.IsEnabled = true;
-
-                        GetBattery();
-                        timer = new DispatcherTimer();
-                        timer.Interval = TimeSpan.FromMilliseconds(10000);
-                        timer.Tick += timer_Tick;
-                        timer.Start();
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(String.Format("出問題啦:{0}", error.ToString()));
-            }
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            PRINT(state);
-            if(state == "idle")
-            {
-                GetBattery();
-            }
-        }
-
-        private void GetBattery()
-        {
-            Console.WriteLine("Get battery");
-            state = "Battery";
-            byte[] bytestosend = { 0x55, 0x07, 0x00, 0xAA };
-            port.Write(bytestosend, 0, 4);
-        }
-
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             GetComport();
         }
-
+        //取得連接在PC的comport列表
         private void GetComport()
         {
             string[] ports = SerialPort.GetPortNames();
@@ -145,6 +80,84 @@ namespace Actiwatch
             }
         }
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            OpenComport();
+
+        }
+        //開啟comport channel
+        private void OpenComport()
+        {
+            port = new SerialPort((String)ComportCombo.SelectedItem, 115200, Parity.None, 8, StopBits.One);
+            port.ReadTimeout = 500;
+            port.WriteTimeout = 500;
+            try
+            {
+                if (port.IsOpen)
+                {
+                    port.Close();
+                    Thread.Sleep(500);
+                }
+                if ((port != null) && (!port.IsOpen))
+                {
+                    port.Open();
+                    if (port.IsOpen)
+                    {
+                        state = "idle";
+                        readThread = new Thread(receive);
+                        readThread.Start();
+                        Console.WriteLine("Comport opened");
+
+                        deviceStatus.Text = "Connected";
+                        searchButton.IsEnabled = false;
+                        connectButton.IsEnabled = false;
+                        disconnectButton.IsEnabled = true;
+                        downloadButton.IsEnabled = true;
+                        clearButton.IsEnabled = true;
+                        recordingButton.IsEnabled = false;
+
+                        GetBattery();
+                        timer = new DispatcherTimer();
+                        timer.Interval = TimeSpan.FromMilliseconds(10000);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(String.Format("出問題啦:{0}", error.ToString()));
+            }
+        }
+
+        //結束comport channel
+        private void DisconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (port.IsOpen)
+            {
+                readThread.Suspend();
+                port.Close();
+                Thread.Sleep(500);
+                if (!port.IsOpen)
+                {
+                    downloadData.Visibility = Visibility.Hidden;
+                    downloadData.DataContext = null;
+
+                    timer.Stop();
+                    deviceStatus.Text = "Disconnected";
+                    debugText.Text = "";
+                    batteryStatus.Text = "0 %";
+                    batteryImage.Kind = PackIconKind.Battery0;
+                    searchButton.IsEnabled = true;
+                    connectButton.IsEnabled = true;
+                    disconnectButton.IsEnabled = false;
+                    downloadButton.IsEnabled = false;
+                    clearButton.IsEnabled = false;
+                    recordingButton.IsEnabled = false;
+                }
+            }
+        }
+
         private void receive()
         {
             while (true)
@@ -156,11 +169,10 @@ namespace Actiwatch
                     byte[] buffer = new byte[bytes];
                     port.Read(buffer, 0, bytes);
                     string data = ByteArrayToHexString(buffer);
-                    //PRINT(data);
                     switch (state)
                     {
                         case "GetTotalPageNumber":
-                            PRINT("start get total page number");
+                            Console.WriteLine("start get total page number");
                             Application.Current.Dispatcher.Invoke(() =>
                             {
                                 debugText.Text += "Start download data\n";
@@ -168,10 +180,16 @@ namespace Actiwatch
                             total_page_number = GetTotalPageNumber(data);
                             total_timestamp = new string[total_page_number * 40];
 
-                            PRINT("Total page number : " + total_page_number);
+                            Console.WriteLine("Total page number : " + total_page_number);
                             if (total_page_number < 1)
                             {
-                                PRINT("No data");
+                                Console.WriteLine("No data");
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    debugText.Text += "No data\n";
+                                    downloadProgressPanel.Visibility = Visibility.Hidden;
+                                });
+                                state = "idle";
                             }
                             else
                             {
@@ -185,11 +203,11 @@ namespace Actiwatch
                                 if (data.Length != 524)
                                 {
                                     GetPageData(index);
-                                    PRINT("error");
+                                    Console.WriteLine("error");
                                 }
                                 else
                                 {
-                                    PRINT("足夠封包");
+                                    Console.WriteLine("足夠封包");
                                     GetSensorData(data);
                                     GetPageData(++index);
                                 }
@@ -201,7 +219,7 @@ namespace Actiwatch
                                 {
                                     debugText.Text += "Download finish\n";
                                 });
-                                //PRINT("Get data finish");
+                                //Console.WriteLine("Get data finish");
                             }
                             break;
                         case "Fill":
@@ -241,10 +259,14 @@ namespace Actiwatch
                             {
                                 if (data == "55010101AA")
                                 {
-                                    PRINT("start recording");
+                                    Console.WriteLine("start recording");
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         debugText.Text += "Start recording\n";
+                                        downloadButton.IsEnabled = false;
+                                        clearButton.IsEnabled = false;
+                                        recordingButton.IsEnabled = false;
+                                        timer.Stop();
                                     });
                                     state = "idle";
                                 }
@@ -264,6 +286,7 @@ namespace Actiwatch
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         debugText.Text += "Cleaning finish\n";
+                                        recordingButton.IsEnabled = true;
                                     });
                                     state = "idle";
                                 }
@@ -286,7 +309,7 @@ namespace Actiwatch
                             if (data.Length == 10)
                             {
                                 double voltage = (double)Convert.ToInt32(data[4] + "" + data[5] + "" + data[6] + "" + data[7] + "", 16) / 100;
-                                PRINT(voltage + "");
+                                Console.WriteLine(voltage + "");
                                 string batteryPercentage = "";
                                 if (voltage >= 4.2)
                                 {
@@ -331,7 +354,7 @@ namespace Actiwatch
                 }
             }
         }
-
+        //解析page資料(256 bytes)
         private void GetSensorData(string data)
         {
             for (int i = 0; i < 256; i++)
@@ -382,7 +405,7 @@ namespace Actiwatch
                 (hour + "").PadLeft(2, '0') + ":" +
                 (minute + "").PadLeft(2, '0') + ":" +
                 (second + "").PadLeft(2, '0');
-            PRINT(timestamp);
+            Console.WriteLine(timestamp);
             DateTime taskDate = DateTime.ParseExact(timestamp, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             long unixTime = ((DateTimeOffset)taskDate).ToUnixTimeSeconds();
 
@@ -419,10 +442,8 @@ namespace Actiwatch
                 total_cpm2.Add(cpm2);
                 unixTime += 1;
             }
-
-            
         }
-
+        //要求第幾個page的資料
         private void GetPageData(int index)
         {
             this.Dispatcher.Invoke((Action)(() =>
@@ -431,12 +452,12 @@ namespace Actiwatch
                 progressPercentage.Text = String.Format("Downloading...({0:0.00} %)", (double)index / total_page_number * 100);
             }));
             
-            PRINT((double)index / total_page_number * 100 + "");
+            Console.WriteLine((double)index / total_page_number * 100 + "");
             state = "GetPageData";
             string getdata = "550504" + Convert.ToString(index, 16).ToUpper().PadLeft(8, '0') + "AA";
             port.Write(HexToByte(getdata), 0, 8);
         }
-
+        //轉換page
         private int GetTotalPageNumber(string data)
         {
             string convert = "";
@@ -447,7 +468,7 @@ namespace Actiwatch
             }
             return int.Parse(convert, System.Globalization.NumberStyles.HexNumber);
         }
-
+        //要求開始記錄
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Recording");
@@ -456,15 +477,56 @@ namespace Actiwatch
             port.Write(bytestosend, 0, 10);
         }
 
-        private string ByteArrayToHexString(byte[] data)
-	    { 
-	        StringBuilder sb = new StringBuilder(data.Length * 3);
-            foreach (byte b in data)
-            {   
-	            sb.Append(Convert.ToString(b, 16).PadLeft(2, '0')); 
+        
+
+        //啟動要求電量的timer, 時間間隔為10秒
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine(state);
+            if (state == "idle")
+            {
+                GetBattery();
             }
-	        return sb.ToString().ToUpper(); 
-	    }
+        }
+        //要求電量
+        private void GetBattery()
+        {
+            Console.WriteLine("Get battery");
+            state = "Battery";
+            byte[] bytestosend = { 0x55, 0x07, 0x00, 0xAA };
+            port.Write(bytestosend, 0, 4);
+        }
+
+        //要求總共多少page
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            downloadProgressPanel.Visibility = Visibility.Visible;
+
+            state = "GetTotalPageNumber";
+
+            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xaa };
+            port.Write(bytestosend, 0, 4);
+            Console.WriteLine("comport write");
+        }
+        
+        //清空flash資料
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("start clear");
+            state = "Clear";
+            byte[] bytestosend = { 0x55, 0x03, 0x02, 0x00, 0xFF, 0xAA };
+            port.Write(bytestosend, 0, 6);
+        }
+
+        private string ByteArrayToHexString(byte[] data)
+        {
+            StringBuilder sb = new StringBuilder(data.Length * 3);
+            foreach (byte b in data)
+            {
+                sb.Append(Convert.ToString(b, 16).PadLeft(2, '0'));
+            }
+            return sb.ToString().ToUpper();
+        }
         private byte[] HexToByte(string hexString)
         {
             //運算後的位元組長度:16進位數字字串長/2
@@ -476,62 +538,12 @@ namespace Actiwatch
             }
             return byteOUT;
         }
-
-        private void PRINT(string text)
-        {
-            Console.WriteLine(text);
-        }
-        
-
-        private void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            downloadProgressPanel.Visibility = Visibility.Visible;
-
-            state = "GetTotalPageNumber";
-
-            byte[] bytestosend = { 0x55, 0x04, 0x00, 0xaa };
-            port.Write(bytestosend, 0, 4);
-            Console.WriteLine("comport write");
-        }
-
-        private void DisconnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (port.IsOpen)
-            {
-
-                readThread.Suspend();
-                port.Close();
-                if (!port.IsOpen)
-                {
-                    timer.Stop();
-                    deviceStatus.Text = "Disconnected";
-                    batteryStatus.Text = "0 %";
-                    batteryImage.Kind = PackIconKind.Battery0;
-                    searchButton.IsEnabled = true;
-                    connectButton.IsEnabled = true;
-                    disconnectButton.IsEnabled = false;
-                    stopButton.IsEnabled = false;
-                    downloadButton.IsEnabled = false;
-                    clearButton.IsEnabled = false;
-                    recordingButton.IsEnabled = false;
-                }
-            }
-        }
-
-        private void ClearButton_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("start clear");
-            state = "Clear";
-            byte[] bytestosend = { 0x55, 0x03, 0x02, 0x00, 0xFF, 0xAA };
-            port.Write(bytestosend, 0, 6);
-        }
-
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("stop recording");
-            state = "Stop";
-            byte[] bytestosend = { 0x55, 0x02, 0x01, 0x02, 0xAA };
-            port.Write(bytestosend, 0, 5);
-        }
+        //private void StopButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Console.WriteLine("stop recording");
+        //    state = "Stop";
+        //    byte[] bytestosend = { 0x55, 0x02, 0x01, 0x02, 0xAA };
+        //    port.Write(bytestosend, 0, 5);
+        //}
     }
 }

@@ -80,27 +80,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Day1Model.cs" />
-    <Compile Include="Day2Model.cs" />
-    <Compile Include="Day3Model.cs" />
-    <Compile Include="Day4Model.cs" />
-    <Compile Include="Day5Model.cs" />
-    <Compile Include="Day6Model.cs" />
-    <Compile Include="Day7Model.cs" />
+    <Compile Include="Model\Day1Model.cs" />
+    <Compile Include="Model\Day2Model.cs" />
+    <Compile Include="Model\Day3Model.cs" />
+    <Compile Include="Model\Day4Model.cs" />
+    <Compile Include="Model\Day5Model.cs" />
+    <Compile Include="Model\Day6Model.cs" />
+    <Compile Include="Model\Day7Model.cs" />
+    <Compile Include="DialyData.cs" />
     <Compile Include="DialyRecord.xaml.cs">
       <DependentUpon>DialyRecord.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DownloadDataModel.cs" />
-    <Compile Include="LightViewModel.cs" />
-    <Compile Include="GsensorViewModel.cs" />
+    <Compile Include="Model\DownloadDataModel.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Model\LightViewModel.cs" />
+    <Compile Include="Model\GsensorViewModel.cs" />
+    <Compile Include="Model\rawZModel.cs" />
     <Compile Include="Sleep.xaml.cs">
       <DependentUpon>Sleep.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SleepAlgorithm.cs" />
+    <Compile Include="Algorithm\SleepAlgorithm.cs" />
     <Compile Include="SleepReport.xaml.cs">
       <DependentUpon>SleepReport.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TempViewModel.cs" />
+    <Compile Include="Model\StageModel.cs" />
+    <Compile Include="Model\TempViewModel.cs" />
     <Page Include="DeviceSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

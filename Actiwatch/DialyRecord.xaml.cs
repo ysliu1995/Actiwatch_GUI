@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -10,124 +11,6 @@ using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using UserControl = System.Windows.Controls.UserControl;
 namespace Actiwatch
 {
-    public class Global
-    {
-        public static List<DialyData> Dialy_List = new List<DialyData>();
-    }
-    public class DialyData
-    {
-        public string datetime;
-        public float[] temp = new float[86400];
-        public int[] light = new int[86400];
-        public double[] vm = new double[86400];
-        public double[] vmDiff = new double[86399];
-        public double[] sleepVm = new double[86400];
-        public double[] sleepZ = new double[86400];
-        public int[] x = new int[86400];
-        public int[] y = new int[86400];
-        public int[] z = new int[86400];
-        public int startRange;
-        public int endRange;
-        public Boolean haveSleep;
-        public double SE;
-        public double SOT;
-        public double WASO;
-        public double TST;
-
-        public DialyData(string datetime, float[] temp, int[] light, double[] vm, double[] vmDiff, int[] x, int[] y, int[] z)
-        {
-            this.datetime = datetime;
-            this.temp = (float[])temp.Clone();
-            this.light = (int[])light.Clone();
-            this.vm = (double[])vm.Clone();
-            this.vmDiff = (double[])vmDiff.Clone();
-            this.x = (int[])x.Clone();
-            this.y = (int[])y.Clone();
-            this.z = (int[])z.Clone();
-            this.startRange = 0;
-            this.endRange = 0;
-            this.haveSleep = false;
-        }
-        public void SetStartRange(int startRange)
-        {
-            this.startRange = startRange;
-        }
-        public void SetEndRange(int endRange)
-        {
-            this.endRange = endRange;
-        }
-        public double GetStartRange()
-        {
-            return this.startRange;
-        }
-        public double GetEndRange()
-        {
-            return this.endRange;
-        }
-        public string GetDatetime()
-        {
-            return this.datetime;
-        }
-        public float[] GetTemp()
-        {
-            return this.temp;
-        }
-        public int[] GetLight()
-        {
-            return this.light;
-        }
-        public double[] GetVM()
-        {
-            return this.vm;
-        }
-        public double[] GetVMDiff()
-        {
-            return this.vmDiff;
-        }
-        public int[] GetX()
-        {
-            return this.x;
-        }
-        public int[] GetY()
-        {
-            return this.y;
-        }
-        public int[] GetZ()
-        {
-            return this.z;
-        }
-        public void SetSleepTime(double[] sleepVm, double[] sleepZ)
-        {
-            this.sleepVm = (double[])sleepVm.Clone();
-            this.sleepZ = (double[])sleepZ.Clone();
-        }
-        public double[] GetSleepTime()
-        {
-            return this.sleepVm;
-        }
-        public double[] GetSleepZ()
-        {
-            return this.sleepZ;
-        }
-
-
-        public double[] GetPhysicalActivity()
-        {
-            double[] PA = new double[1440];
-            double cpm = 0;
-            for (int i = 0; i < 1440; i++)
-            {
-                cpm = 0;
-                for (int j = 1; j < 60; j++)
-                {
-                    cpm += Math.Abs(this.vm[i * 60 + j] - this.vm[i * 60 + j - 1]);
-                }
-                PA[i] = cpm;
-            }
-            return PA;
-        }
-    }
-   
     /// <summary>
     /// DialyRecord.xaml 的互動邏輯
     /// </summary>
@@ -136,11 +19,16 @@ namespace Actiwatch
         public DialyRecord()
         {
             InitializeComponent();
+
+            Reload();
         }
 
-
+        //選擇儲存下來的檔案(.txt)
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //清除全域變數
+            Global.Dialy_List = new List<DialyData>();
+
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "Select file";
             dialog.InitialDirectory = ".\\";
@@ -162,18 +50,14 @@ namespace Actiwatch
                         int[] tmp_x = new int[86400];
                         int[] tmp_y = new int[86400];
                         int[] tmp_z = new int[86400];
-                        // Read and display lines from the file until the end of
-                        // the file is reached.
                         sr.ReadLine();
                         line = sr.ReadLine();
+                        Console.WriteLine(line);
                         data = line.Split(',');
-                        //PRINT(data[0]);
                         DateTime taskDate = DateTime.ParseExact(data[0], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                         long FirstUnixTime = ((DateTimeOffset)taskDate).ToUnixTimeSeconds();
                         DateTime InitialDate = DateTime.ParseExact(data[0].Split(' ')[0], "yyyy-MM-dd", CultureInfo.InvariantCulture);
                         long InitialUnixTime = ((DateTimeOffset)InitialDate).ToUnixTimeSeconds();
-                        //PRINT(InitialUnixTime + "");
-                        //PRINT(FirstUnixTime + "");
                         long PreTime = FirstUnixTime - InitialUnixTime + 1;
                         int index = Convert.ToInt32(PreTime);
                         for (int i = 0; i < PreTime; i++)
@@ -242,16 +126,17 @@ namespace Actiwatch
                             DialyData tmp = new DialyData(data[0].Split(' ')[0], tmp_temp, tmp_light, tmp_vm, tmp_vm_diff, tmp_x, tmp_y, tmp_z);
                             Global.Dialy_List.Add(tmp);
                         }
-                        PRINT(Global.Dialy_List.Count + "");
+                        //重新加入日期列表
                         DialyCombo.Items.Clear();
                         foreach (DialyData dialy in Global.Dialy_List)
                         {
                             DialyCombo.Items.Add(dialy.GetDatetime());
-                            if (DialyCombo.Items.Count > 0)
-                            {
-                                DialyCombo.SelectedIndex = 0;
-                            }
                         }
+                        if (DialyCombo.Items.Count > 0)
+                        {
+                            DialyCombo.SelectedIndex = 0;
+                        }
+                        //時間中午12點到中午12點
                         double[] newArray = new double[86400];
                         double[] newZArray = new double[86400];
                         for (int i=0;i< Global.Dialy_List.Count - 1; i++)
@@ -269,9 +154,10 @@ namespace Actiwatch
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            Gsensor.DataContext = new GsensorViewModel(Global.Dialy_List[0].GetVM());
-                            Light.DataContext = new LightViewModel(Global.Dialy_List[0].GetLight());
-                            Temp.DataContext = new TempViewModel(Global.Dialy_List[0].GetTemp());
+                            Gsensor.DataContext = new GsensorViewModel(Global.Dialy_List[0].GetDatetime(), Global.Dialy_List[0].GetVM());
+                            Light.DataContext = new LightViewModel(Global.Dialy_List[0].GetDatetime(), Global.Dialy_List[0].GetLight());
+                            Temp.DataContext = new TempViewModel(Global.Dialy_List[0].GetDatetime(), Global.Dialy_List[0].GetTemp());
+                            
                         });
                     }
                 }
@@ -283,24 +169,24 @@ namespace Actiwatch
                 }
             }
         }
-
+        //選擇哪一天的資料
         private void DialyCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int index = DialyCombo.SelectedIndex;
-            PRINT(index + "");
-            Application.Current.Dispatcher.Invoke(() =>
+            if(index > 0)
             {
-                // UI modify
-                Gsensor.DataContext = new GsensorViewModel(Global.Dialy_List[index].GetVM());
-                Light.DataContext = new LightViewModel(Global.Dialy_List[index].GetLight());
-                Temp.DataContext = new TempViewModel(Global.Dialy_List[index].GetTemp());
-            });
+                Console.WriteLine(index + "");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    // UI modify
+                    Gsensor.DataContext = new GsensorViewModel(Global.Dialy_List[index].GetDatetime(), Global.Dialy_List[index].GetVM());
+                    Light.DataContext = new LightViewModel(Global.Dialy_List[index].GetDatetime(), Global.Dialy_List[index].GetLight());
+                    Temp.DataContext = new TempViewModel(Global.Dialy_List[index].GetDatetime(), Global.Dialy_List[index].GetTemp());
+                });
+            }
         }
-        private void PRINT(string text)
-        {
-            Console.WriteLine(text);
-        }
-
+        
+        //儲存每一天的檔案
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -334,6 +220,27 @@ namespace Actiwatch
             else
             {
                 Console.WriteLine("Cancel");
+            }
+        }
+        //重載資料
+        private void Reload()
+        {
+            if(Global.Dialy_List.Count != 0)
+            {
+                //重新加入日期列表
+                DialyCombo.Items.Clear();
+                foreach (DialyData dialy in Global.Dialy_List)
+                {
+                    DialyCombo.Items.Add(dialy.GetDatetime());
+                }
+                if (DialyCombo.Items.Count > 0)
+                {
+                    DialyCombo.SelectedIndex = 0;
+                }
+                //載入圖表
+                Gsensor.DataContext = new GsensorViewModel(Global.Dialy_List[0].GetDatetime(), Global.Dialy_List[0].GetVM());
+                Light.DataContext = new LightViewModel(Global.Dialy_List[0].GetDatetime(), Global.Dialy_List[0].GetLight());
+                Temp.DataContext = new TempViewModel(Global.Dialy_List[0].GetDatetime(), Global.Dialy_List[0].GetTemp());
             }
         }
     }

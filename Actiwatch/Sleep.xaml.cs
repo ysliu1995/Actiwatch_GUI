@@ -24,7 +24,7 @@ namespace Actiwatch
     {
         private int pageIndex = 1;
         private List<OxyPlot.Wpf.Plot> chartList;
-        private List<string> dateList;
+        private List<string> dateList = new List<string>();
 
         private string[] hour = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"};
         private string[] minute = { "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55" };
@@ -32,12 +32,14 @@ namespace Actiwatch
         public Sleep()
         {
             InitializeComponent();
-
-
+            initView();
+        }
+        //初始化圖表
+        private void initView()
+        {
             chartList = new List<OxyPlot.Wpf.Plot> { Day1, Day2, Day3, Day4, Day5, Day6, Day7 };
-            dateList = new List<string>();
-
-            for (int i = 0; i < 24; i++) {
+            for (int i = 0; i < 24; i++)
+            {
                 startHour.Items.Add(hour[i]);
                 endHour.Items.Add(hour[i]);
             }
@@ -46,7 +48,7 @@ namespace Actiwatch
                 startMinute.Items.Add(minute[i]);
                 endMinute.Items.Add(minute[i]);
             }
-            for(int i=0;i< Global.Dialy_List.Count; i++)
+            for (int i = 0; i < Global.Dialy_List.Count; i++)
             {
                 chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
                 timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
@@ -85,8 +87,10 @@ namespace Actiwatch
             startMinute.SelectedIndex = 0;
             endMinute.SelectedIndex = 0;
             chooseDate.SelectedIndex = 0;
-            
+
+            ReloadDate();
         }
+        //顯示一週data的圖表
         private void showData(int idx)
         {
             switch (idx)
@@ -137,7 +141,7 @@ namespace Actiwatch
                     break;
             }
         }
-
+        //隱藏圖表
         private void HiddenData(int idx)
         {
             switch (idx)
@@ -174,22 +178,17 @@ namespace Actiwatch
                     break;
             }
         }
+        //左鍵
         private void leftButton(object sender, MouseButtonEventArgs e)
         {
             if (pageIndex > 1)
             {
-                //chooseDate.Items.Clear();
-                //timeInBed.Items.Clear();
-                //timeOutOfBed.Items.Clear();
                 pageIndex--;
                 if (Global.Dialy_List.Count < (pageIndex * 7))
                 {
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, Global.Dialy_List.Count, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < Global.Dialy_List.Count; i++)
                     {
-                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                     for (int i = Global.Dialy_List.Count; i < (pageIndex * 7); i++)
@@ -202,9 +201,6 @@ namespace Actiwatch
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, pageIndex * 7, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < pageIndex * 7; i++)
                     {
-                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                 }
@@ -215,29 +211,26 @@ namespace Actiwatch
                 startMinute.SelectedIndex = 0;
                 endMinute.SelectedIndex = 0;
                 chooseDate.SelectedIndex = 0;
+
+                ReloadDate();
             }
         }
+        //右鍵
         private void rightButton(object sender, MouseButtonEventArgs e)
         {
             if (pageIndex < ((float)Global.Dialy_List.Count / 7))
             {
-                //chooseDate.Items.Clear();
-                //timeInBed.Items.Clear();
-                //timeOutOfBed.Items.Clear();
                 pageIndex++;
                 if (Global.Dialy_List.Count < (pageIndex * 7))
                 {
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, Global.Dialy_List.Count, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < Global.Dialy_List.Count; i++)
                     {
-                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                     for (int i = Global.Dialy_List.Count; i < (pageIndex * 7); i++)
                     {
-                        print(i + "");
+                        Console.WriteLine(i + "");
                         HiddenData(i % 7);
                     }
                 }
@@ -246,9 +239,6 @@ namespace Actiwatch
                     pageContent.Text = String.Format("{0} ~ {1} of {2}", (pageIndex - 1) * 7 + 1, pageIndex * 7, Global.Dialy_List.Count);
                     for (int i = (pageIndex - 1) * 7; i < pageIndex * 7; i++)
                     {
-                        //chooseDate.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeInBed.Items.Add(Global.Dialy_List[i].GetDatetime());
-                        //timeOutOfBed.Items.Add(Global.Dialy_List[i].GetDatetime());
                         showData(i % 7);
                     }
                 }
@@ -259,13 +249,62 @@ namespace Actiwatch
                 startMinute.SelectedIndex = 0;
                 endMinute.SelectedIndex = 0;
                 chooseDate.SelectedIndex = 0;
+
+                ReloadDate();
             }
         }
-        private void print(string text)
+        //重新載入已選擇過的上下床時間
+        private void ReloadDate()
         {
-            Console.WriteLine(text);
+            if (Global.Dialy_List.Count < (pageIndex * 7))
+            {
+                for (int i = (pageIndex - 1) * 7; i < Global.Dialy_List.Count; i++)
+                {
+                    if (Global.Dialy_List[i].haveSleep)
+                    {
+                        string startSleepTime = Global.Dialy_List[i].startTime;
+                        string endSleepTime = Global.Dialy_List[i].endTime;
+                        DateTime start = DateTime.ParseExact(startSleepTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                        long time = ((DateTimeOffset)start).ToUnixTimeSeconds();
+                        DateTime startDt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(time);
+                        DateTime end = DateTime.ParseExact(endSleepTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                        time = ((DateTimeOffset)end).ToUnixTimeSeconds();
+                        DateTime endDt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(time);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            chartList[i%7].Annotations.Clear();
+                            chartList[i%7].Annotations.Add(new RectangleAnnotation() { MinimumX = OxyPlot.Axes.DateTimeAxis.ToDouble(startDt), MaximumX = OxyPlot.Axes.DateTimeAxis.ToDouble(endDt), MinimumY = 0, MaximumY = 2000, Fill = Color.FromArgb(120, 255, 151, 151) });
+                            chartList[i%7].InvalidatePlot(true);
+                        });
+                    }
+                }
+            }
+            else
+            {
+                for (int i = (pageIndex - 1) * 7; i < pageIndex * 7; i++)
+                {
+                    if (Global.Dialy_List[i].haveSleep)
+                    {
+                        string startSleepTime = Global.Dialy_List[i].startTime;
+                        string endSleepTime = Global.Dialy_List[i].endTime;
+                        DateTime start = DateTime.ParseExact(startSleepTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                        long time = ((DateTimeOffset)start).ToUnixTimeSeconds();
+                        DateTime startDt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(time);
+                        DateTime end = DateTime.ParseExact(endSleepTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                        time = ((DateTimeOffset)end).ToUnixTimeSeconds();
+                        DateTime endDt = (new DateTime(1970, 1, 1, 0, 0, 0)).AddHours(8).AddSeconds(time);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            chartList[i % 7].Annotations.Clear();
+                            chartList[i % 7].Annotations.Add(new RectangleAnnotation() { MinimumX = OxyPlot.Axes.DateTimeAxis.ToDouble(startDt), MaximumX = OxyPlot.Axes.DateTimeAxis.ToDouble(endDt), MinimumY = 0, MaximumY = 2000, Fill = Color.FromArgb(120, 255, 151, 151) });
+                            chartList[i % 7].InvalidatePlot(true);
+                        });
+                    }
+                }
+            }
+            
         }
-
+        //將選擇的上下床時間標記在圖表上
         private void RefreshDateButton(object sender, RoutedEventArgs e)
         {
             string startSleepTime = String.Format("{0} {1}:{2}:00", timeInBed.Text, startHour.Text, startMinute.Text);
@@ -310,14 +349,13 @@ namespace Actiwatch
             {
                 endTime = (Convert.ToInt32(endHour.Text) + 12) * 3600 + Convert.ToInt32(endMinute.Text) * 60;
             }
-            //Console.WriteLine(startTime);
-            //Console.WriteLine(endTime);
             Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].startRange = startTime;
             Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].endRange = endTime;
             Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].haveSleep = true;
+            Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].startTime = startSleepTime;
+            Global.Dialy_List[(pageIndex - 1) * 7 + chooseIndex].endTime = endSleepTime;
         }
-        
-
+        //更動選擇日期時，上下床時間日期更動
         private void ChooseDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             timeInBed.SelectedIndex = chooseDate.SelectedIndex;
